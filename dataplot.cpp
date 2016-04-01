@@ -127,7 +127,14 @@ bool DataPlot::loadPlotDataPoints(const QString& line)
 void DataPlot::createRegLine(const QVector<QPointF>& in)
 {
     QVector<QPointF> regLineData;
-    Regression* analysis = new Regression( in );
+    Regression* analysis = new Regression();
+
+    for(qint64 i = 0; i < in.size(); ++i){
+        exp_data loaddata;
+        loaddata.x = in[i].x();
+        loaddata.y = in[i].y();
+        analysis->addData(loaddata);
+    }
 
     regLineData << QPointF(0.0, analysis->offset())
                 << QPointF(maxAD(), analysis->slope()*maxAD()
@@ -140,6 +147,20 @@ void DataPlot::createRegLine(const QVector<QPointF>& in)
                 QString("Slope: ") +
                 QString::number(analysis->slope(),'f', 4.4) +
                 '\n' +
+#ifdef TEST_REG
+                QString("num_data: ") +
+                QString::number(analysis->num_data_points,'f', 5.0) +
+                '\n' +
+                QString("sumXY: ") +
+                QString::number(analysis->sumXY(),'f', 5.0) +
+                '\n' +
+                QString("sumXX: ") +
+                QString::number(analysis->sumXX(),'f', 5.0) +
+                '\n' +
+                QString("sumX: ") +
+                QString::number(analysis->sumX(),'f', 5.0) +
+                '\n' +
+#endif
                 QString("Offset: ") +
                 QString::number(analysis->offset(),'f', 4.3)+
                 '\n' +

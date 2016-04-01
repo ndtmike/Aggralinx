@@ -84,8 +84,13 @@ MainWindow::MainWindow(QWidget *parent) :
     QTimer* init_timer = new QTimer(this);
     init_timer->singleShot(100, this, SLOT(showSplash()));
 #else
+#ifdef TEST_REG
+    QTimer* init_timer = new QTimer(this);
+    init_timer->singleShot(100, this, SLOT(showSplash()));
+#else
     QTimer* init_timer = new QTimer(this);
     init_timer->singleShot(100, this, SLOT(loadExampleFile()));
+#endif
 #endif
 }
 
@@ -482,16 +487,4 @@ int MainWindow::posGetPos(QString& data, int line_number, bool begin)
 void MainWindow::closeEvent (QCloseEvent* /*event*/)
 {
     plot->close();
-/*
-    QMessageBox::StandardButton resBtn = QMessageBox::question( this, "Aggralinx",
-                                                                tr("Are you sure?\n"),
-                                                                QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes,
-                                                                QMessageBox::Yes);
-    if (resBtn != QMessageBox::Yes) {
-        event->ignore();
-    } else {
-
-        event->accept();
-    }
-*/
 }

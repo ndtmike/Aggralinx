@@ -16,45 +16,54 @@
 #ifndef REGRESSION_H
 #define REGRESSION_H
 
+#include <QList>
 #include <QVector>
-#include <QPointF>
-#include <QtGlobal>
-#ifdef QT_DEBUG
-#include <QMessageBox>
-#endif
+
+
+typedef int treg_data_size;
+typedef double treg_data_data;
+
+struct exp_data{
+    treg_data_data x;
+    treg_data_data y;
+};
 
 class Regression
 {
 public:
 
-    QVector <QPointF> reg_data;
+    QList <exp_data> reg_data;
 
     Regression();
-    Regression( const QVector <QPointF>& in);
     ~Regression();
-    void addData( QPointF data );
+    void addData( exp_data data );
 
-    qreal num_data_points;
-    qreal stand_dev_x();
-    qreal stand_dev_y();
-    qreal mean_x();
-    qreal mean_y();
-    qreal r();
-    qreal rsqu();
-    qreal slope();
-    qreal offset();
+    treg_data_data num_data_points;
+    treg_data_data stand_dev_x();
+    treg_data_data stand_dev_y();
+    treg_data_data mean_x();
+    treg_data_data mean_y();
+    treg_data_data r();
+    treg_data_data rsqu();
+    treg_data_data slope();
+    treg_data_data offset();
+
+    treg_data_data sumX();
+    treg_data_data sumY();
+    treg_data_data sumXY();
+    treg_data_data sumXX();
+    treg_data_data sumYY();
 
 private:
 
     bool bad_init_data;
-
-    qreal sumX();
-    qreal sumY();
-    qreal sumXY();
-    qreal sumXX();
-    qreal sumYY();
-
-
+/*
+    treg_data_data sumX();
+    treg_data_data sumY();
+    treg_data_data sumXY();
+    treg_data_data sumXX();
+    treg_data_data sumYY();
+*/
 };
 
 #endif // REGRESSION_H

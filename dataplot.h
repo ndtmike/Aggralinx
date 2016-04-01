@@ -26,6 +26,10 @@
 
 #include "regression.h"
 
+#ifdef QT_DEBUG
+//#define TEST_REG
+#endif
+
 class DataPlot : public QwtPlot
 {
      Q_OBJECT

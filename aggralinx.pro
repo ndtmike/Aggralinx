@@ -14,7 +14,6 @@ SOURCES += \
     dataplot.cpp \
     moisturedialog.cpp \
     instrumentdata.cpp \
-    linearregression.cpp \
     regression.cpp
 
 HEADERS += \
@@ -26,7 +25,6 @@ HEADERS += \
     dataplot.h \
     moisturedialog.h \
     instrumentdata.h \
-    linearregression.h \
     regression.h
 
 FORMS += \

@@ -74,6 +74,8 @@
 #include "moisturedialog.h"
 #include "dataplot.h"
 
+#define TEST_REG
+
 
 QT_BEGIN_NAMESPACE
 
