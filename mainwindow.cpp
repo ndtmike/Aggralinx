@@ -54,7 +54,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     console = new Console;
-    console->setEnabled(false);
     setCentralWidget(console);
     serial = new QSerialPort(this);
     moistureData = new MoistureDialog(this);

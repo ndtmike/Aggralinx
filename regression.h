@@ -48,22 +48,15 @@ public:
     treg_data_data slope();
     treg_data_data offset();
 
-    treg_data_data sumX();
-    treg_data_data sumY();
-    treg_data_data sumXY();
-    treg_data_data sumXX();
-    treg_data_data sumYY();
-
 private:
 
     bool bad_init_data;
-/*
+
     treg_data_data sumX();
     treg_data_data sumY();
     treg_data_data sumXY();
     treg_data_data sumXX();
     treg_data_data sumYY();
-*/
 };
 
 #endif // REGRESSION_H
