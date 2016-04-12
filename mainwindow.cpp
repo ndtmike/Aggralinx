@@ -301,7 +301,6 @@ void MainWindow::endUpload()
     QApplication::setOverrideCursor(Qt::WaitCursor);
 #endif
     cleanData();
-    console->setPlainText("");
     file.open(QFile::ReadOnly | QFile::Text);
     QTextStream ReadFile(&file);
     console->setPlainText(ReadFile.readAll());
@@ -322,13 +321,11 @@ void MainWindow::openFile()
         tr("Open Text File"), "", tr("Text FIles (*.txt)"));
     saveFileName = fileName;
     QFile file(saveFileName);
+    file.open(QFile::ReadOnly | QFile::Text);
     QTextStream load(&file);
 #ifndef QT_NO_CURSOR
     QApplication::setOverrideCursor(Qt::WaitCursor);
 #endif
-    console->setPlainText("");
-    file.open(QFile::ReadOnly | QFile::Text);
-    QTextStream ReadFile(&file);
     console->setPlainText(load.readAll());
 #ifndef QT_NO_CURSOR
     QApplication::restoreOverrideCursor();
