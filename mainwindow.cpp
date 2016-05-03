@@ -135,14 +135,15 @@ void MainWindow::about()
     QString s;
     QTextStream toabout(&s);
 
-    toabout << tr("The <b>Reboundlinx Software</b> is used with the <br>") <<
-               tr("<b><i>James Instruments Inc.</i></b> Digital Rebound Hammers.<br><br>")<<
+    toabout << tr("The <b>Aggralinx Software</b> is used with the <br>") <<
+               tr("<b><i>James Instruments Inc.</i></b> Aggrameter T-T-100.<br><br>")<<
                tr("USA: +1773.4636565<br>")<<
                tr("Europe: +31.548.659032<br>")<<
-               tr("Email: <a href=\"mailto:info@ndtjames.com?Subject=Reboundlinx\" target=\"_top\">info@ndtjames.com</a><br>")<<
-               tr("Web: <a href=\"http://www.ndtjames.com\">http://www.ndtjames.com</a><br>");
+               tr("Email: <a href=\"mailto:info@ndtjames.com?Subject=Aggrameter\" target=\"_top\">info@ndtjames.com</a><br>")<<
+               tr("Web: <a href=\"http://www.ndtjames.com\">http://www.ndtjames.com</a><br>")<<
+               tr("Copyright 2016");
 
-    QMessageBox::information(this, tr("About Reboundlinx"), s);
+    QMessageBox::information(this, tr("About Aggrameter"), s);
 }
 
 void MainWindow::help()
@@ -223,7 +224,10 @@ bool MainWindow::checkSerialPort()
     QString manufacturer;
     QString portname;
     const QString portmanufacturer = "FTDI";
-    const QString noport = tr("No Available Ports\nCheck instrument is plugged in\nor serial port installed properly\n then restart Reboundlinx");
+    const QString noport = tr("No Available Ports"
+                              "\nCheck instrument is plugged in"
+                              "\nor serial port installed properly"
+                              "\n then restart Aggralinx");
     const QString messageTitle = "checkSerialPort";
     const QString connected = tr("Connected to ");
     QList <QSerialPortInfo> availablePorts;

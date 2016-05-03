@@ -57,7 +57,7 @@
 #include <QSerialPortInfo>
 #include <QTimer>
 #include <QList>
-#include <QtSerialPort/QSerialPort>
+//#include <QtSerialPort/QSerialPort>
 #include <QProcess>
 
 
