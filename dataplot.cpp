@@ -37,13 +37,13 @@ void DataPlot::createClasses()
     Curve = new QwtPlotCurve;
     Grid = new QwtPlotGrid;
     Symbol = new QwtSymbol( QwtSymbol::Ellipse,
-                QBrush( Qt::yellow ),
+                QBrush( Qt::red ),
                 QPen( Qt::red, 2 ),
                 QSize( 8, 8 ) );
     rCurve = new QwtPlotCurve;
     rSymbol = new QwtSymbol(QwtSymbol::Ellipse,
-                            QBrush( Qt::yellow ),
-                            QPen( Qt::blue, 2 ),
+                            QBrush( Qt::red ),
+                            QPen( Qt::red, 2 ),
                             QSize( 8, 8 ));
 }
 
@@ -144,7 +144,7 @@ void DataPlot::createRegLine(const QVector<QPointF>& in)
 
     QString p = QString("Correlation:") +
                 '\n' +
-                QString("Slope: ") +
+                QString("Gain: ") +
                 QString::number(analysis->slope(),'f', 4.4) +
                 '\n' +
 #ifdef TEST_REG

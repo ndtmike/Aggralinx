@@ -46,13 +46,19 @@ QMAKE_TARGET_DESCRIPTION = Upload Software for James Instruments Aggrameter
 QMAKE_TARGET_COPYRIGHT = @2016 James Instruments Inc.
 }
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../qwt-6.1.2/build-qwt-Desktop_Qt_5_5_0_MinGW_32bit-Debug/lib/ -lqwt
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../qwt-6.1.2/build-qwt-Desktop_Qt_5_5_0_MinGW_32bit-Debug/lib/ -lqwtd
+#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../qwt-6.1.2/build-qwt-Desktop_Qt_5_5_0_MinGW_32bit-Debug/lib/ -lqwt
+#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../qwt-6.1.2/build-qwt-Desktop_Qt_5_5_0_MinGW_32bit-Debug/lib/ -lqwtd
 
-INCLUDEPATH += $$PWD/../../../qwt-6.1.2/src
-DEPENDPATH += $$PWD/../../../qwt-6.1.2/src
+#INCLUDEPATH += $$PWD/../../../qwt-6.1.2/src
+#DEPENDPATH += $$PWD/../../../qwt-6.1.2/src
 
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../../qwt-6.1.2/build-qwt-Desktop_Qt_5_5_0_MinGW_32bit-Debug/lib/libqwt.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../../qwt-6.1.2/build-qwt-Desktop_Qt_5_5_0_MinGW_32bit-Debug/lib/libqwtd.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../../qwt-6.1.2/build-qwt-Desktop_Qt_5_5_0_MinGW_32bit-Debug/lib/qwt.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../../qwt-6.1.2/build-qwt-Desktop_Qt_5_5_0_MinGW_32bit-Debug/lib/qwtd.lib
+#win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../../qwt-6.1.2/build-qwt-Desktop_Qt_5_5_0_MinGW_32bit-Debug/lib/libqwt.a
+#else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../../qwt-6.1.2/build-qwt-Desktop_Qt_5_5_0_MinGW_32bit-Debug/lib/libqwtd.a
+#else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../../qwt-6.1.2/build-qwt-Desktop_Qt_5_5_0_MinGW_32bit-Debug/lib/qwt.lib
+#else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../../qwt-6.1.2/build-qwt-Desktop_Qt_5_5_0_MinGW_32bit-Debug/lib/qwtd.lib
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../qwt-6.1.2/lib/ -lqwt
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../qwt-6.1.2/lib/ -lqwtd
+
+INCLUDEPATH += $$PWD/../../../../../../qwt-6.1.2/include
+DEPENDPATH += $$PWD/../../../../../../qwt-6.1.2/include
