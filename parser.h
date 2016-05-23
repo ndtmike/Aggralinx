@@ -12,7 +12,6 @@
 ** Email: mike@ndtjames.com
 ** -------------------------------------------------------------------------*/
 
-
 #ifndef PARSER_H
 #define PARSER_H
 

@@ -95,7 +95,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    bool saveFileSwitch;
+//    bool saveFileSwitch;
     QString saveFileName;
 
 protected:
@@ -132,8 +132,6 @@ private:
     int posGetPos(QString& data, int line_number, bool begin);
     bool foundSerialPort;
     bool saveFile(const QString &fileName);
-
-//    QwtPlot *plot;
     DataPlot* plot;
     Ui::MainWindow *ui;
     Console *console;
@@ -148,5 +146,4 @@ private:
     static const QString exampleFile(void){ return("AG_Sample_Data.txt"); };
 #endif
 };
-
 #endif // MAINWINDOW_H

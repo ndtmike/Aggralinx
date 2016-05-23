@@ -49,9 +49,11 @@ void DataPlot::createClasses()
 
 void DataPlot::SetPlotParameters()
 {
-    setTitle( "Aggralinx" );
+    setTitle(tr("Aggralinx Regression"));
     setCanvasBackground( Qt::white );
     insertLegend( new QwtLegend() );
+//    setAxisScale(QwtPlot::yLeft, minAxisScale(), maxYAxisScale());
+//    setAxisScale(QwtPlot::xBottom, minAxisScale(), maxXAxisScale());
 }
 
 void DataPlot::SetGridParameters()
@@ -75,6 +77,8 @@ void DataPlot::SetRCurveParameters()
 
 void DataPlot::displayGraph(const QVector<QPointF>& points)
 {
+    setAxisScale(QwtPlot::yLeft, minAxisScale(), maxY(points));
+    setAxisScale(QwtPlot::xBottom, minAxisScale(), maxX(points));
     Curve->setSamples( points );
     Curve->attach(this);
 
@@ -171,4 +175,30 @@ void DataPlot::createRegLine(const QVector<QPointF>& in)
     rCurve->setLegendAttribute(QwtPlotCurve::LegendShowSymbol, false);
 
     delete analysis;
+}
+
+qreal DataPlot::maxY(const QVector<QPointF> &in)
+{
+    qreal rvalue = 0.0;
+    qreal test = 0.0;
+    QVector<QPointF> buffer = in;
+
+    for(int i = 0; i<in.size();++i){
+        test = buffer[i].ry();
+        rvalue = qMax( test, rvalue);
+    }
+    return(rvalue);
+}
+
+qreal DataPlot::maxX(const QVector<QPointF> &in)
+{
+    qreal rvalue = 0.0;
+    qreal test = 0.0;
+    QVector<QPointF> buffer = in;
+
+    for(int i = 0; i<in.size();++i){
+        test = buffer[i].rx();
+        rvalue = qMax( test, rvalue);
+    }
+    return(rvalue);
 }

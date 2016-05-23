@@ -90,6 +90,7 @@ bool Parser::readInputData()
 */
 #endif
    }
+   file.remove();
    file.close();
    return(ifs);
 }

@@ -5,7 +5,7 @@
 **
 ** File Name: dataplot.h
 **
-** Header file for dataplot.cpp - aggralinx software
+** Header file for analydialog.cpp - aggralinx software
 **
 ** Author: Michael W. Hoag
 ** Copyright Michael W. Hoag 2016
@@ -21,58 +21,37 @@
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
 #include <QPointF>
-#include <QMessageBox>
-#include <QDialog>
-#include <QtCore>
+#include<QMessageBox>
 
-#include "regression.h"
-
-#ifdef QT_DEBUG
-//#define TEST_REG
-#endif
-
-class DataPlot : public QwtPlot
+class DataPlot : QwtPlot
 {
      Q_OBJECT
+
 public:
-    explicit DataPlot(QWidget* /*parent*/);
+    DataPlot(QWidget *parent = NULL);
     ~DataPlot();
 
+    void loadPoints(const QVector<QPointF>& points);
     void createPoints(const QString& rawdata);
 
 private:
-
-    bool loadPlotDataPoints(const QString& line);
-    void displayGraph(const QVector<QPointF>& points);
-    void createRegLine(const QVector<QPointF>& in);
-
-    void createClasses();
     void SetPlotParameters();
     void SetGridParameters();
     void SetCurveParameters();
-    void SetRCurveParameters();
-
-    qreal maxY(const QVector<QPointF>& in);
-    qreal maxX(const QVector<QPointF>& in);
+    bool loadPlotDataPoints(const QString& line);
 
     QwtPlot* Plot;
     QwtPlotCurve* Curve;
-    QwtPlotCurve* rCurve;
     QwtPlotGrid* Grid;
     QwtSymbol* Symbol;
-    QwtSymbol* rSymbol;
 
-    QPolygonF plotDataPoints;
+    QVector<QPointF> plotDataPoints;
 
     static int endLineConst(void){ return(-1); };
     static int readingPosConst(void){ return(15); };
     static int readingWidthConst(void){ return(5); };
     static int moisturePosConst(void){ return(28); };
     static int lineSizeConst(void){ return(27); };
-    static qreal maxAD(void){return(409.6);};
-    static qreal minAxisScale(void){return(0.0);};
-    static qreal maxYAxisScale(void){return(20.0);};
-    static qreal maxXAxisScale(void){return(409.5);};
 };
 
 #endif // DATAPLOT_H

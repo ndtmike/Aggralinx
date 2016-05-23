@@ -1,4 +1,3 @@
-
 /****************************************************************************
 **
 ** Copyright (C) 2012 Denis Shienkov <denis.shienkov@gmail.com>
@@ -58,18 +57,10 @@ MainWindow::MainWindow(QWidget *parent) :
     serial = new QSerialPort(this);
     moistureData = new MoistureDialog(this);
     serialTimeOut = new QTimer(this);
-
     plot = new DataPlot(this);
 
-    ui->actionQuit->setEnabled(true);
-    ui->actionMoisture->setEnabled(false);
-
     initActionsConnections();
-
-    saveFileSwitch = true; //file not loaded, no problem to close
     saveFileName = "";
-    ui->action_Save->setEnabled(false);
-    ui->actionSaveAs->setEnabled(false);
 
     connect(moistureData, SIGNAL(btnEnterClick()), this, SLOT(dlgEnter()));
     connect(moistureData, SIGNAL(btnFinishClick()), this, SLOT(dlgFinish()));
@@ -141,7 +132,8 @@ void MainWindow::about()
                tr("Europe: +31.548.659032<br>")<<
                tr("Email: <a href=\"mailto:info@ndtjames.com?Subject=Aggrameter\" target=\"_top\">info@ndtjames.com</a><br>")<<
                tr("Web: <a href=\"http://www.ndtjames.com\">http://www.ndtjames.com</a><br>")<<
-               tr("Copyright 2016");
+               tr("Copyright 2016<br>")<<
+               tr("Aggralinx is based in part on the work of the <a href=\"http://qwt.sf.net\"> Qwt project (http://qwt.sf.net)");
 
     QMessageBox::information(this, tr("About Aggrameter"), s);
 }
@@ -149,7 +141,7 @@ void MainWindow::about()
 void MainWindow::help()
 {
     QProcess* help = new QProcess(this);
-    help->start("hh.exe aggralinx.chm");
+    help->start("hh.exe Aggralinx.chm");
 }
 
 void MainWindow::writeData(const QByteArray &data)
@@ -182,6 +174,13 @@ void MainWindow::handleError(QSerialPort::SerialPortError error)
 
 void MainWindow::initActionsConnections()
 {
+    ui->actionQuit->setEnabled(true);
+    ui->actionMoisture->setEnabled(false);
+    ui->actionPlot->setEnabled(false);
+    ui->actionSaveAs->setEnabled(false);
+    ui->action_Save->setEnabled(false);
+    ui->action_Open->setEnabled(true);
+
     connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveAs()));
@@ -312,11 +311,12 @@ void MainWindow::endUpload()
     QApplication::restoreOverrideCursor();
 #endif
     file.close();
-    saveFileSwitch = false;//file loaded but not saved
     ui->action_Save->setEnabled(true);
     ui->actionSaveAs->setEnabled(true);
+    ui->action_Open->setEnabled(false);
+    ui->actionMoisture->setEnabled(true);
+    ui->actionPlot->setEnabled(true);
 }
-
 
 void MainWindow::openFile()
 {
@@ -336,18 +336,14 @@ void MainWindow::openFile()
 #endif
     file.close();
     ui->actionMoisture->setEnabled(true);
-    saveFileSwitch = false;//file loaded but not saved
     ui->action_Save->setEnabled(true);
     ui->actionSaveAs->setEnabled(true);
+    ui->action_Open->setEnabled(false);
+    ui->actionPlot->setEnabled(true);
 }
 
 void MainWindow::save()
 {
-    if(saveFileSwitch == true){
-        QMessageBox::information(this,"Aggralinx",
-                                 tr("Nothing to Save!"));
-        return;
-    }
     if(saveFileName != ""){
         saveFile(saveFileName);
         QMessageBox::information(this,"Aggralinx",tr("File: ")+
@@ -377,7 +373,6 @@ bool MainWindow::saveFile(const QString &fileName)
 #ifndef QT_NO_CURSOR
     QApplication::restoreOverrideCursor();
 #endif
-    saveFileSwitch = true; //saved the file
     return true;
 }
 
@@ -461,7 +456,6 @@ void MainWindow::updateConsole(QString line, int line_number)
     }
     console->setPlainText("");
     console->setPlainText(consoledata);
-    saveFileSwitch = false;
 }
 
 int MainWindow::posGetPos(QString& data, int line_number, bool begin)
