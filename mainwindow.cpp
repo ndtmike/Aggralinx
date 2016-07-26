@@ -94,6 +94,24 @@ MainWindow::~MainWindow()
     delete serial;
 }
 
+void MainWindow::about()
+{
+    QString s;
+    QTextStream toabout(&s);
+
+    toabout << tr("The <b>Aggralinx Software</b> Version 3.1 is used with the <br>") <<
+               tr("<b><i>James Instruments Inc.</i></b> Aggrameter T-T-100.<br><br>")<<
+               tr("USA: +1773.4636565<br>")<<
+               tr("Europe: +31.548.659032<br>")<<
+               tr("Email: <a href=\"mailto:info@ndtjames.com?Subject=Aggrameter\" target=\"_top\">info@ndtjames.com</a><br>")<<
+               tr("Web: <a href=\"http://www.ndtjames.com\">http://www.ndtjames.com</a><br>")<<
+               tr("<br>Copyright 2016<br><br>")<<
+               tr("Aggralinx is based in part on the work of<br> the <a href=\"http://qwt.sf.net\"> Qwt project (http://qwt.sf.net)</a>,<br>")<<
+               tr("the <a href=\"http://www.qt.io\">QT project (http://www.qt.io) </a>,<br>")<<
+               tr("and the <a href=\"http://www.mingw.org/\">MinGW Project (http://www.mingw.org)</a>");
+
+    QMessageBox::information(this, tr("About Aggrameter"), s);
+}
 
 void MainWindow::openSerialPort()
 {
@@ -119,23 +137,6 @@ void MainWindow::closeSerialPort()
         serial->close();
     console->setEnabled(false);
     ui->statusBar->showMessage(tr("Disconnected"));
-}
-
-void MainWindow::about()
-{
-    QString s;
-    QTextStream toabout(&s);
-
-    toabout << tr("The <b>Aggralinx Software</b> is used with the <br>") <<
-               tr("<b><i>James Instruments Inc.</i></b> Aggrameter T-T-100.<br><br>")<<
-               tr("USA: +1773.4636565<br>")<<
-               tr("Europe: +31.548.659032<br>")<<
-               tr("Email: <a href=\"mailto:info@ndtjames.com?Subject=Aggrameter\" target=\"_top\">info@ndtjames.com</a><br>")<<
-               tr("Web: <a href=\"http://www.ndtjames.com\">http://www.ndtjames.com</a><br>")<<
-               tr("Copyright 2016<br>")<<
-               tr("Aggralinx is based in part on the work of the <a href=\"http://qwt.sf.net\"> Qwt project (http://qwt.sf.net)");
-
-    QMessageBox::information(this, tr("About Aggrameter"), s);
 }
 
 void MainWindow::help()

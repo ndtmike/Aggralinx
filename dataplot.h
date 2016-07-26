@@ -20,6 +20,7 @@
 #include <qwt_plot_grid.h>
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
+#include <qwt_plot_textlabel.h>
 #include <QPointF>
 #include <QMessageBox>
 #include <QDialog>
@@ -42,18 +43,18 @@ public:
 
 private:
 
-    bool loadPlotDataPoints(const QString& line);
-    void displayGraph(const QVector<QPointF>& points);
-    void createRegLine(const QVector<QPointF>& in);
-
     void createClasses();
-    void SetPlotParameters();
-    void SetGridParameters();
+    void createRegLine(const QVector<QPointF>& in);
+    void displayGraph(const QVector<QPointF>& points);
+    void displayRegParameters( const QString& in);
+    bool loadPlotDataPoints(const QString& line);
+    qreal maxX(const QVector<QPointF>& in);
+    qreal maxY(const QVector<QPointF>& in);
     void SetCurveParameters();
+    void SetGridParameters();
+    void SetPlotParameters();
     void SetRCurveParameters();
 
-    qreal maxY(const QVector<QPointF>& in);
-    qreal maxX(const QVector<QPointF>& in);
 
     QwtPlot* Plot;
     QwtPlotCurve* Curve;

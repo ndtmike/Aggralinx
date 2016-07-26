@@ -47,48 +47,6 @@ void DataPlot::createClasses()
                             QSize( 8, 8 ));
 }
 
-void DataPlot::SetPlotParameters()
-{
-    setTitle(tr("Aggralinx Regression"));
-    setCanvasBackground( Qt::white );
-    insertLegend( new QwtLegend() );
-//    setAxisScale(QwtPlot::yLeft, minAxisScale(), maxYAxisScale());
-//    setAxisScale(QwtPlot::xBottom, minAxisScale(), maxXAxisScale());
-}
-
-void DataPlot::SetGridParameters()
-{
-    Grid->attach(this);
-}
-
-void DataPlot::SetCurveParameters()
-{
-    Curve->setTitle( "Data Points" );
-    Curve->setStyle(QwtPlotCurve::NoCurve);
-    Curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-    Curve->setSymbol( Symbol );
-}
-
-void DataPlot::SetRCurveParameters()
-{
-    rCurve->setStyle(QwtPlotCurve::Lines);
-    rCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-}
-
-void DataPlot::displayGraph(const QVector<QPointF>& points)
-{
-    setAxisScale(QwtPlot::yLeft, minAxisScale(), maxY(points));
-    setAxisScale(QwtPlot::xBottom, minAxisScale(), maxX(points));
-    Curve->setSamples( points );
-    Curve->attach(this);
-
-    createRegLine(plotDataPoints);
-
-    resize( 600, 400 );
-    replot();
-    show();
-}
-
 void DataPlot::createPoints(const QString& rawdata)
 {
     QString working = rawdata;
@@ -103,6 +61,63 @@ void DataPlot::createPoints(const QString& rawdata)
         working.remove(0, posendline+1);
      }
     displayGraph(plotDataPoints);
+}
+
+void DataPlot::createRegLine(const QVector<QPointF>& in)
+{
+    QVector<QPointF> regLineData;
+    Regression* analysis = new Regression();
+
+    for(qint64 i = 0; i < in.size(); ++i){
+        exp_data loaddata;
+        loaddata.x = in[i].x();
+        loaddata.y = in[i].y();
+        analysis->addData(loaddata);
+    }
+
+    regLineData << QPointF(0.0, analysis->offset())
+                << QPointF(maxAD(), analysis->slope()*maxAD()
+                            + analysis->offset());
+    rCurve->setSamples( regLineData );
+    rCurve->attach( this );
+
+    QString p = QString("Correlation Line:") + '\n' +
+                QString("Gain: ") + QString::number(analysis->slope(),'f', 4.4) + '\n' +
+                QString("Offset: ") + QString::number(analysis->offset(),'f', 4.3)+ '\n' +
+                QString("R Squared: ")+ QString::number(analysis->rsqu(),'f',4.4);
+
+    displayRegParameters(p);
+    rCurve->setLegendAttribute(QwtPlotCurve::LegendShowSymbol, false);
+    delete analysis;
+}
+
+void DataPlot::displayGraph(const QVector<QPointF>& points)
+{
+    setAxisScale(QwtPlot::yLeft, minAxisScale(), maxY(points));
+    setAxisScale(QwtPlot::xBottom, minAxisScale(), maxX(points));
+    Curve->setSamples( points );
+    Curve->attach(this);
+
+    createRegLine(plotDataPoints);
+
+    resize( 1200, 800 );
+    replot();
+    show();
+}
+
+void DataPlot::displayRegParameters(const QString &in){
+
+    QwtPlotTextLabel* text_label = new QwtPlotTextLabel;
+    QwtText qwt_text(in);
+    QFont font = qwt_text.font();
+    font.setPointSize(14);
+    qwt_text.setFont(font);
+    qwt_text.setColor(Qt::black);
+    qwt_text.setRenderFlags( Qt::AlignLeft | Qt::AlignTop );
+
+    text_label->setText(qwt_text);
+    text_label->attach( this );
+    text_label->show();
 }
 
 bool DataPlot::loadPlotDataPoints(const QString& line)
@@ -128,54 +143,35 @@ bool DataPlot::loadPlotDataPoints(const QString& line)
     return(success);
 }
 
-void DataPlot::createRegLine(const QVector<QPointF>& in)
+void DataPlot::SetPlotParameters()
 {
-    QVector<QPointF> regLineData;
-    Regression* analysis = new Regression();
+    setTitle(tr("Aggralinx Regression"));
+    setAxisTitle( QwtPlot::xBottom, "Aggrameter Value");
+    setAxisTitle( QwtPlot::yLeft, "Moisture Value");
+    setCanvasBackground( Qt::white );
+    insertLegend( new QwtLegend() );
 
-    for(qint64 i = 0; i < in.size(); ++i){
-        exp_data loaddata;
-        loaddata.x = in[i].x();
-        loaddata.y = in[i].y();
-        analysis->addData(loaddata);
-    }
-
-    regLineData << QPointF(0.0, analysis->offset())
-                << QPointF(maxAD(), analysis->slope()*maxAD()
-                            + analysis->offset());
-    rCurve->setSamples( regLineData );
-    rCurve->attach( this );
-
-    QString p = QString("Correlation:") +
-                '\n' +
-                QString("Gain: ") +
-                QString::number(analysis->slope(),'f', 4.4) +
-                '\n' +
-#ifdef TEST_REG
-                QString("num_data: ") +
-                QString::number(analysis->num_data_points,'f', 5.0) +
-                '\n' +
-                QString("sumXY: ") +
-                QString::number(analysis->sumXY(),'f', 5.0) +
-                '\n' +
-                QString("sumXX: ") +
-                QString::number(analysis->sumXX(),'f', 5.0) +
-                '\n' +
-                QString("sumX: ") +
-                QString::number(analysis->sumX(),'f', 5.0) +
-                '\n' +
-#endif
-                QString("Offset: ") +
-                QString::number(analysis->offset(),'f', 4.3)+
-                '\n' +
-                QString("R Squared: ")+
-                QString::number(analysis->rsqu(),'f',4.4);
-
-    rCurve->setTitle(p);
-    rCurve->setLegendAttribute(QwtPlotCurve::LegendShowSymbol, false);
-
-    delete analysis;
 }
+
+void DataPlot::SetCurveParameters()
+{
+    Curve->setTitle( "Data Points" );
+    Curve->setStyle(QwtPlotCurve::NoCurve);
+    Curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+    Curve->setSymbol( Symbol );
+}
+
+void DataPlot::SetGridParameters()
+{
+    Grid->attach(this);
+}
+
+void DataPlot::SetRCurveParameters()
+{
+    rCurve->setStyle(QwtPlotCurve::Lines);
+    rCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+}
+
 
 qreal DataPlot::maxY(const QVector<QPointF> &in)
 {

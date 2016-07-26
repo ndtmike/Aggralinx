@@ -65,7 +65,7 @@
    <item alignment="Qt::AlignHCenter">
     <widget class="QLabel" name="Software_Version">
      <property name="text">
-      <string>Version 3.0</string>
+      <string>Version 3.1</string>
      </property>
     </widget>
    </item>

@@ -1,5 +1,6 @@
 #
-QT += widgets serialport
+QWT_ROOT = C:\qwt-6.1.2-MinGw
+QT += widgets serialport core gui
 
 TARGET = Aggralinx
 TEMPLATE = app
@@ -39,15 +40,15 @@ DISTFILES +=
 
 win32{
 RC_ICONS += ../icon/NDT_agg1.ico
-VERSION = 3.0.0.0
+VERSION = 3.1.0.0
 QMAKE_TARGET_COMPANY = James Instruments Inc.
 QMAKE_TARGET_PRODUCT = Aggralinx
 QMAKE_TARGET_DESCRIPTION = Upload Software for James Instruments Aggrameter
 QMAKE_TARGET_COPYRIGHT = @2016 James Instruments Inc.
 }
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../qwt-6.1.2/lib/ -lqwt
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../qwt-6.1.2/lib/ -lqwtd
+win32:CONFIG(release, debug|release): LIBS += -L$${QWT_ROOT}/lib/ -lqwt
+else:win32:CONFIG(debug, debug|release): LIBS += -L$${QWT_ROOT}/lib/ -lqwtd
 
-INCLUDEPATH += $$PWD/../../../../../../qwt-6.1.2/include
-DEPENDPATH += $$PWD/../../../../../../qwt-6.1.2/include
+INCLUDEPATH += $${QWT_ROOT}/src
+DEPENDPATH  += $${QWT_ROOT}/src
