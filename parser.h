@@ -12,6 +12,7 @@
 ** Email: mike@ndtjames.com
 ** -------------------------------------------------------------------------*/
 
+
 #ifndef PARSER_H
 #define PARSER_H
 
@@ -25,7 +26,6 @@
 #include <QVector>
 
 #include "mainwindow.h"
-#include "datapacket.h"
 
 class Parser : public QMainWindow
 {
@@ -37,14 +37,15 @@ public:
 
 private:
      QString dataFile;
-     QString outputFile;
      QVector<QString> inputData;
+     QString outputFile;
+
+     QString cleanLine(QString& line);
+     void eraseTempFile();
      bool readInputData();
      bool writeOutputData();
-     void eraseTempFile();
-     QString cleanLine(QString& line);
 
-    static const QString tFile(void){ return("temp.txt");};
+     static const QString tFile(void){ return("temp.txt");};
      static qint64 maxLineLength(void){ return(35);};
      static qint64 minLineLength(void){ return(24);};
 };

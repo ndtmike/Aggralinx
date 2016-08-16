@@ -14,7 +14,6 @@
 ** -------------------------------------------------------------------------*/
 
 #include "parser.h"
-#include "datapacket.h"
 
 Parser::Parser()
 {
@@ -80,17 +79,7 @@ bool Parser::readInputData()
                 inputData.append(linebuf);
             }
         }
-#ifdef QT_DEBUG
-//        QMessageBox::information(this, "Parser", tr("readInputData Success"));
-// Left this to check input data
-/*        for(qint64 x= 0; x< inputData.size();++x){
-            QMessageBox::information(this, "inputData", inputData.at(x));
-        }
-
-*/
-#endif
    }
-   file.remove();
    file.close();
    return(ifs);
 }
@@ -111,10 +100,6 @@ bool Parser::writeOutputData(){
             opl<<inputData.at(x)<<'\n';
         }
      }
-#ifdef QT_DEBUG
-//        QMessageBox::information(this, "Parser", tr("writeOutputData Success"));
-#endif
-
     file.close();
     return r;
 }
@@ -127,26 +112,15 @@ void Parser::eraseTempFile()
 
 QString Parser::cleanLine(QString& line)
 {
-#ifdef QT_DEBUG
-    QString temp;
-    QTextStream out(&temp);
-#endif
     QString working=line;
 
     for(int i = 0; i < line.size(); ++i){
        if((!(line[i]>='0'&&line[i]<='9'))&&(!(line[i]>='A'&& line[i]<='Z'))&&
            (!(line[i]>='a'&& line[i]<='z'))&&
            line[i]!=':'&&line[i]!='/'&&line[i]!=' '&&line[i]!='.'){
-#ifdef QT_DEBUG
-           out<<line[i]; //displays the garbage characters caught
-//           QMessageBox::information(this, "eraseTempFile", temp);
-#endif
            working = line.remove(i,1);
            --i;//set the counter back as you removed a character
         }
     }
-#ifdef QT_DEBUG
-//    QMessageBox::information(this, "eraseTempFile", working);
-#endif
     return(line);
 }

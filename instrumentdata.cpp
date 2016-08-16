@@ -18,10 +18,22 @@ InstrumentData::InstrumentData()
     rawInput = dummyData();
 }
 
-InstrumentData::InstrumentData(QString& dataIn)
+InstrumentData::InstrumentData(const QString& dataIn)
 {
 
     rawInput = dataIn;
+    qDebug()<<rawInput;
+
+    QTextStream textin(&rawInput);
+    QString word;
+    QVector <QString> Words;
+
+    while( textin.status() == QTextStream::Ok) {
+            textin >> word;
+            qDebug() << word;
+            if(word != "") Words.push_back(word);
+    }
+
 }
 
 InstrumentData::~InstrumentData()
@@ -29,28 +41,16 @@ InstrumentData::~InstrumentData()
 
 }
 
-QString InstrumentData::rawTime()
-{
-     QString buffer = rawInput.section(" ",rawTimeIndex(),rawTimeIndex());
-     return buffer;
-}
-
 QString InstrumentData::rawDate()
 {
-    QString buffer = rawInput.section(" ",rawDateIndex(),rawDateIndex());
-    return buffer;
-}
-
-QString InstrumentData::rawReading()
-{
-    QString buffer = rawInput.section(" ",rawReadingIndex(),rawReadingIndex());
-    return buffer;
+//    QString buffer = rawInput.section(" ",rawDateIndex(),rawDateIndex());
+    return Words[1];
 }
 
 QString InstrumentData::rawMaterial()
 {
-    QString buffer = rawInput.section(" ",rawMaterialIndex(),rawMaterialIndex());
-    return buffer;
+//    QString buffer = rawInput.section(" ",rawMaterialIndex(),rawMaterialIndex());
+    return Words[3];
 }
 
 QString InstrumentData::rawPercentage()
@@ -59,18 +59,21 @@ QString InstrumentData::rawPercentage()
     return buffer;
 }
 
+QString InstrumentData::rawReading()
+{
+//    QString buffer = rawInput.section(" ",rawReadingIndex(),rawReadingIndex());
+    return Words[2];
+}
+
+QString InstrumentData::rawTime()
+{
+//     QString buffer = rawInput.section(" ",rawTimeIndex(),rawTimeIndex());
+     return Words[0];
+}
+
 void InstrumentData::updatePercentage(QString &percentage)
 {
     rawInput = rawInput.left(upDatePercentageIndex())+' '+ percentage;
-}
-
-QTime InstrumentData::toQTime()
-{
-    QTime output;
-    QString buffer = this->rawTime();
-    output =QTime::fromString(buffer, "HH':'MM");
-
-    return(output);
 }
 
 QDate InstrumentData::toQDate()
@@ -86,5 +89,11 @@ QDateTime InstrumentData::toQDateTime()
     return(QDateTime(this->toQDate(),this->toQTime()));
 }
 
+QTime InstrumentData::toQTime()
+{
+    QTime output;
+    QString buffer = this->rawTime();
+    output =QTime::fromString(buffer, "HH':'MM");
 
-
+    return(output);
+}

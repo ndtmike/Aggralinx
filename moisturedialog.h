@@ -41,30 +41,30 @@ public:
     bool loadFile(const QString &fileName);
     QList< ::InstrumentData> combinedData;
     int list_iterator;
+
 signals:
     void btnEnterClick();
     void btnFinishClick();
 
 private slots:
+    void backward();
+    void cancel();
     void enterData();
     void finish();
     void forward();
-    void backward();
-    void cancel();
 
 private:
-    Ui::MoistureDialog *ui;
     void initActionsConnections();
     QList<QString> inputData;
+    Ui::MoistureDialog *ui;
 
     void updateDialog();
 
+    static int convertCountingNumbers(void){return(1);};
+    static QString dummyPercent(void){return(" xxx.x");};
     static qint64 maxLineLength(void){ return(35);};
     static double maxPercent(void){return(30.0);};
     static double minPercent(void){return(0.0);};
     static int percentPrecision(void){return(2);};
-    static int convertCountingNumbers(void){return(1);};
-    static QString dummyPercent(void){return(" xxx.x");};
-
 };
 #endif // MOISTUREDIALOG_H

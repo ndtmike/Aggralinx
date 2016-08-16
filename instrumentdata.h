@@ -23,36 +23,36 @@
 #include <QtCore/QtGlobal>
 #include <QIODevice>
 #include <QTextStream>
-
+#include <QDebug>
 
 class InstrumentData
 {
 public:
     InstrumentData();
-    InstrumentData(QString& dataIn);
+    InstrumentData(const QString& dataIn);
     ~InstrumentData();
 
-    QString rawInput;
-    QString rawTime();
     QString rawDate();
-    QString rawReading();
+    QString rawInput;
     QString rawMaterial();
     QString rawPercentage();
+    QString rawReading();
+    QString rawTime();
     void updatePercentage(QString& percentage);
-
-    QTime toQTime();
     QDate toQDate();
     QDateTime toQDateTime();
+    QTime toQTime();
 
 private:
-    static QString dummyData(void)
-        {return("00:00 00/00/00 000.0 Dummy xx.x");};
-    static int rawTimeIndex(void){return(0);};
+    QVector <QString> Words;
+
+    static QString dummyData(void){return("00:00 00/00/00 000.0 Dummy xx.x");};
     static int rawDateIndex(void){return(1);};
-    static int rawReadingIndex(void){return(2);};
+    static int upDatePercentageIndex(void){return(27);};
     static int rawMaterialIndex(void){return(3);};
     static int rawPercentageIndex(void){return(4);};
-    static int upDatePercentageIndex(void){return(27);};
+    static int rawReadingIndex(void){return(2);};
+    static int rawTimeIndex(void){return(0);};
 };
 
 #endif // INSTRUMENTDATA_H

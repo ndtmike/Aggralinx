@@ -113,111 +113,6 @@ void MainWindow::about()
     QMessageBox::information(this, tr("About Aggrameter"), s);
 }
 
-void MainWindow::openSerialPort()
-{
-    serial->setBaudRate(9600);
-    serial->setDataBits(QSerialPort::Data8);
-    serial->setParity(QSerialPort::NoParity);
-    serial->setStopBits(QSerialPort::OneStop);
-    serial->setFlowControl(QSerialPort::NoFlowControl);
-    if (serial->open(QIODevice::ReadOnly)) {
-            console->setEnabled(true);
-            console->setLocalEchoEnabled( true);
-            ui->statusBar->showMessage(tr("Connected"));
-    } else {
-        QMessageBox::critical(this, tr("Error"), serial->errorString());
-
-        ui->statusBar->showMessage(tr("Open error"));
-    }
-}
-
-void MainWindow::closeSerialPort()
-{
-    if (serial->isOpen())
-        serial->close();
-    console->setEnabled(false);
-    ui->statusBar->showMessage(tr("Disconnected"));
-}
-
-void MainWindow::help()
-{
-    QProcess* help = new QProcess(this);
-    help->start("hh.exe Aggralinx.chm");
-}
-
-void MainWindow::writeData(const QByteArray &data)
-{
-    serial->write(data);
-}
-
-void MainWindow::readData()
-{
-    QFile file(rdFile());
-    QTextStream out(&file);
-    serialTimeOut->start(500);
-    QByteArray data = serial->readAll();
-    console->putData(data);
-    if(!file.open(QIODevice::Append)){
-        QMessageBox::information(this, "readData", tr("Cannot write rd.txt"));
-    }else{
-        out<<data;
-    }
-    file.close();
-}
-
-void MainWindow::handleError(QSerialPort::SerialPortError error)
-{
-    if (error == QSerialPort::ResourceError) {
-        QMessageBox::critical(this, tr("Critical Error"), serial->errorString());
-        closeSerialPort();
-    }
-}
-
-void MainWindow::initActionsConnections()
-{
-    ui->actionQuit->setEnabled(true);
-    ui->actionMoisture->setEnabled(false);
-    ui->actionPlot->setEnabled(false);
-    ui->actionSaveAs->setEnabled(false);
-    ui->action_Save->setEnabled(false);
-    ui->action_Open->setEnabled(true);
-
-    connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
-    connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
-    connect(ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveAs()));
-    connect(ui->actionCopy, SIGNAL(triggered()), this, SLOT(copy()));
-    connect(ui->actionHelp, SIGNAL(triggered()), this, SLOT(help()));
-    connect(ui->actionMoisture, SIGNAL(triggered()), this, SLOT(moisture()));
-    connect(ui->actionPlot, SIGNAL(triggered()), this, SLOT(plotData()));
-    connect(ui->action_Save, SIGNAL(triggered()), this, SLOT(save()));
-    connect(ui->action_Open, SIGNAL(triggered()), this, SLOT(openFile()));
-}
-
-void MainWindow::cleanData()
-{
-    Parser* p = new Parser(rdFile(), tFile());
-    delete p;
-    ui->actionMoisture->setEnabled(true);
-}
-
-void MainWindow::processSerialPort()
-{
-    foundSerialPort = checkSerialPort();
-    if(foundSerialPort){openSerialPort();}
-}
-
-void MainWindow::showSplash()
-{
-    const int five_sec = 5000;
-
-    SplashDialog* splash = new SplashDialog();
-    splash->setModal( true );
-    splash->show();
-
-    QTimer* splash_timer = new QTimer(this);
-    splash_timer->singleShot(five_sec, this, SLOT(processSerialPort()));
-}
-
 bool MainWindow::checkSerialPort()
 {
     QString description;
@@ -253,6 +148,145 @@ bool MainWindow::checkSerialPort()
         QMessageBox::information(this ,messageTitle , connected + portname );
     }
     return(r);
+}
+
+void MainWindow::cleanData()
+{
+    Parser* p = new Parser(rdFile(), tFile());
+    delete p;
+    ui->actionMoisture->setEnabled(true);
+}
+
+
+void MainWindow::copy()
+{
+    console->selectAll();
+    console->copy();
+}
+
+void MainWindow::closeEvent (QCloseEvent* /*event*/)
+{
+    plot->close();
+}
+
+void MainWindow::closeSerialPort()
+{
+    if (serial->isOpen())
+        serial->close();
+    console->setEnabled(false);
+    ui->statusBar->showMessage(tr("Disconnected"));
+}
+
+void MainWindow::displayInstData()
+{
+    QString displaystring;
+    QTextStream display(&displaystring);
+
+    for( auto i = InstDataVector.begin();
+        i != InstDataVector.end(); ++i){
+        display<<i->rawDate()<<' '
+               <<i->rawTime()<<' '
+               <<i->rawMaterial()<<' '
+               <<i->rawReading()<<'\n';
+    }
+    console->appendPlainText(displaystring);
+}
+
+void MainWindow::dlgEnter()
+{
+    QString line = "";
+    int line_number = 0;
+
+    if(moistureData->list_iterator > 0){
+        line = moistureData->combinedData[moistureData->list_iterator-1].rawInput;
+        line_number = moistureData->list_iterator;
+    }else{
+        line = moistureData->combinedData.last().rawInput;
+        line_number = moistureData->combinedData.size();
+    }
+
+    updateConsole(line, line_number);
+
+    moistureData->show();
+    moistureData->activateWindow();
+    moistureData->raise();
+    moistureData->setFocus();
+}
+
+void MainWindow::dlgFinish()
+{
+    plot->createPoints( console->toPlainText() );
+}
+
+void MainWindow::handleError(QSerialPort::SerialPortError error)
+{
+    if (error == QSerialPort::ResourceError) {
+        QMessageBox::critical(this, tr("Critical Error"), serial->errorString());
+        closeSerialPort();
+    }
+}
+
+void MainWindow::help()
+{
+    QProcess* help = new QProcess(this);
+    help->start("hh.exe Aggralinx.chm");
+}
+
+void MainWindow::endUpload()
+{
+    const QString outputfile = tFile();
+    QFile file(outputfile);
+    QString data;
+
+    serialTimeOut->stop();
+    QMessageBox::information(this, "endUpload", tr("Upload Complete"));
+#ifndef QT_NO_CURSOR
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+#endif
+    cleanData();
+    file.open(QFile::ReadOnly | QFile::Text);
+    QTextStream ReadFile(&file);
+    data = ReadFile.readAll();
+    loadData(data);  //loads InstDataVector
+    displayInstData();
+#ifndef QT_NO_CURSOR
+    QApplication::restoreOverrideCursor();
+#endif
+    file.close();
+    ui->action_Save->setEnabled(true);
+    ui->actionSaveAs->setEnabled(true);
+    ui->action_Open->setEnabled(false);
+    ui->actionMoisture->setEnabled(true);
+    ui->actionPlot->setEnabled(true);
+}
+
+void MainWindow::initActionsConnections()
+{
+    ui->actionQuit->setEnabled(true);
+    ui->actionMoisture->setEnabled(false);
+    ui->actionPlot->setEnabled(false);
+    ui->actionSaveAs->setEnabled(false);
+    ui->action_Save->setEnabled(false);
+    ui->action_Open->setEnabled(true);
+
+    connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
+    connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
+    connect(ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveAs()));
+    connect(ui->actionCopy, SIGNAL(triggered()), this, SLOT(copy()));
+    connect(ui->actionHelp, SIGNAL(triggered()), this, SLOT(help()));
+    connect(ui->actionMoisture, SIGNAL(triggered()), this, SLOT(moisture()));
+    connect(ui->actionPlot, SIGNAL(triggered()), this, SLOT(plotData()));
+    connect(ui->action_Save, SIGNAL(triggered()), this, SLOT(save()));
+    connect(ui->action_Open, SIGNAL(triggered()), this, SLOT(openFile()));
+}
+
+void MainWindow::loadData(QString Data)
+{
+    QStringList datalines = Data.split( "\n", QString::SkipEmptyParts );
+    foreach( QString line, datalines ) {
+       InstrumentData newinstdata(line);
+       InstDataVector.append(newinstdata);
+    }
 }
 
 #ifdef QT_DEBUG
@@ -294,53 +328,108 @@ void MainWindow::loadTemp()
     ui->actionMoisture->setEnabled(true);
 }
 
-void MainWindow::endUpload()
+void MainWindow::moisture()
 {
-    const QString outputfile = tFile();
-    QFile file(outputfile);
+    saveFile(tFile());
 
-    serialTimeOut->stop();
-    QMessageBox::information(this, "endUpload", tr("Upload Complete"));
-#ifndef QT_NO_CURSOR
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-#endif
-    cleanData();
-    file.open(QFile::ReadOnly | QFile::Text);
-    QTextStream ReadFile(&file);
-    console->setPlainText(ReadFile.readAll());
-#ifndef QT_NO_CURSOR
-    QApplication::restoreOverrideCursor();
-#endif
-    file.close();
-    ui->action_Save->setEnabled(true);
-    ui->actionSaveAs->setEnabled(true);
-    ui->action_Open->setEnabled(false);
-    ui->actionMoisture->setEnabled(true);
-    ui->actionPlot->setEnabled(true);
+    if(!(moistureData->loadFile(tFile()))){ //moisturedialog does not wait for input
+            return ;
+    }
+    moistureData->show();
 }
 
 void MainWindow::openFile()
 {
     QString fileName = "";
+    QString data;
     fileName = QFileDialog::getOpenFileName(this,
         tr("Open Text File"), "", tr("Text FIles (*.txt)"));
     saveFileName = fileName;
+
     QFile file(saveFileName);
     file.open(QFile::ReadOnly | QFile::Text);
     QTextStream load(&file);
+
 #ifndef QT_NO_CURSOR
     QApplication::setOverrideCursor(Qt::WaitCursor);
 #endif
-    console->setPlainText(load.readAll());
+    data = load.readAll();
+    loadData(data);  //loads InstDataVector
+    displayInstData();
 #ifndef QT_NO_CURSOR
     QApplication::restoreOverrideCursor();
 #endif
     file.close();
+
     ui->actionMoisture->setEnabled(true);
     ui->action_Save->setEnabled(true);
     ui->actionSaveAs->setEnabled(true);
     ui->action_Open->setEnabled(false);
     ui->actionPlot->setEnabled(true);
+}
+
+void MainWindow::openSerialPort()
+{
+    serial->setBaudRate(9600);
+    serial->setDataBits(QSerialPort::Data8);
+    serial->setParity(QSerialPort::NoParity);
+    serial->setStopBits(QSerialPort::OneStop);
+    serial->setFlowControl(QSerialPort::NoFlowControl);
+    if (serial->open(QIODevice::ReadOnly)) {
+            console->setEnabled(true);
+            console->setLocalEchoEnabled( true);
+            ui->statusBar->showMessage(tr("Connected"));
+    } else {
+        QMessageBox::critical(this, tr("Error"), serial->errorString());
+
+        ui->statusBar->showMessage(tr("Open error"));
+    }
+}
+
+void MainWindow::plotData()
+{
+    dlgFinish();
+}
+
+int MainWindow::posGetPos(QString& data, int line_number, bool begin)
+{
+    int posendline = 0;
+    int posbeginline=0;
+    QString working = data;
+
+    for(int i = 0; i < line_number; ++i){
+        posbeginline = posendline;
+        posendline = working.indexOf('\n',posendline +1);//end of line
+        if (posendline == -1){
+            posendline = working.size();  //end of file
+        }
+    }
+    if(begin == true){
+        return(posbeginline);
+    }else{
+        return(posendline);
+    }
+}
+
+void MainWindow::processSerialPort()
+{
+    foundSerialPort = checkSerialPort();
+    if(foundSerialPort){openSerialPort();}
+}
+
+void MainWindow::readData()
+{
+    QFile file(rdFile());
+    QTextStream out(&file);
+    serialTimeOut->start(500);
+    QByteArray data = serial->readAll();
+    console->putData(data);
+    if(!file.open(QIODevice::Append)){
+        QMessageBox::information(this, "readData", tr("Cannot write rd.txt"));
+    }else{
+        out<<data;
+    }
+    file.close();
 }
 
 void MainWindow::save()
@@ -353,6 +442,21 @@ void MainWindow::save()
     }else{
         saveAs();
     }
+}
+
+bool MainWindow::saveAs()
+{
+    QFileDialog dialog(this);
+    dialog.setWindowModality(Qt::WindowModal);
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
+    dialog.setNameFilter(tr("Text (*.txt)"));
+    QStringList files;
+    if (dialog.exec())
+        files = dialog.selectedFiles();
+    else
+        return false;
+    saveFileName = files.at(0);
+    return saveFile(files.at(0));
 }
 
 bool MainWindow::saveFile(const QString &fileName)
@@ -377,66 +481,16 @@ bool MainWindow::saveFile(const QString &fileName)
     return true;
 }
 
-bool MainWindow::saveAs()
+void MainWindow::showSplash()
 {
-    QFileDialog dialog(this);
-    dialog.setWindowModality(Qt::WindowModal);
-    dialog.setAcceptMode(QFileDialog::AcceptSave);
-    dialog.setNameFilter(tr("Text (*.txt)"));
-    QStringList files;
-    if (dialog.exec())
-        files = dialog.selectedFiles();
-    else
-        return false;
-    saveFileName = files.at(0);
-    return saveFile(files.at(0));
-}
+    const int five_sec = 5000;
 
-void MainWindow::copy()
-{
-    console->selectAll();
-    console->copy();
-}
+    SplashDialog* splash = new SplashDialog();
+    splash->setModal( true );
+    splash->show();
 
-void MainWindow::moisture()
-{
-    saveFile(tFile());
-
-    if(!(moistureData->loadFile(tFile()))){ //moisturedialog does not wait for input
-            return ;
-    }
-    moistureData->show();
-}
-
-void MainWindow::plotData()
-{
-    dlgFinish();
-}
-
-void MainWindow::dlgEnter()
-{
-    QString line = "";
-    int line_number = 0;
-
-    if(moistureData->list_iterator > 0){
-        line = moistureData->combinedData[moistureData->list_iterator-1].rawInput;
-        line_number = moistureData->list_iterator;
-    }else{
-        line = moistureData->combinedData.last().rawInput;
-        line_number = moistureData->combinedData.size();
-    }
-
-    updateConsole(line, line_number);
-
-    moistureData->show();
-    moistureData->activateWindow();
-    moistureData->raise();
-    moistureData->setFocus();
-}
-
-void MainWindow::dlgFinish()
-{
-    plot->createPoints( console->toPlainText() );
+    QTimer* splash_timer = new QTimer(this);
+    splash_timer->singleShot(five_sec, this, SLOT(processSerialPort()));
 }
 
 void MainWindow::updateConsole(QString line, int line_number)
@@ -459,27 +513,7 @@ void MainWindow::updateConsole(QString line, int line_number)
     console->setPlainText(consoledata);
 }
 
-int MainWindow::posGetPos(QString& data, int line_number, bool begin)
+void MainWindow::writeData(const QByteArray &data)
 {
-    int posendline = 0;
-    int posbeginline=0;
-    QString working = data;
-
-    for(int i = 0; i < line_number; ++i){
-        posbeginline = posendline;
-        posendline = working.indexOf('\n',posendline +1);//end of line
-        if (posendline == -1){
-            posendline = working.size();  //end of file
-        }
-    }
-    if(begin == true){
-        return(posbeginline);
-    }else{
-        return(posendline);
-    }
-}
-
-void MainWindow::closeEvent (QCloseEvent* /*event*/)
-{
-    plot->close();
+    serial->write(data);
 }

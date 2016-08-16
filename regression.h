@@ -31,25 +31,24 @@ struct exp_data{
 class Regression
 {
 public:
-
     QList <exp_data> reg_data;
 
     Regression();
     ~Regression();
-    void addData( exp_data data );
 
     treg_data_data num_data_points;
-    treg_data_data stand_dev_x();
-    treg_data_data stand_dev_y();
+
+    void addData( exp_data data );
+    treg_data_data offset();
     treg_data_data mean_x();
     treg_data_data mean_y();
     treg_data_data r();
     treg_data_data rsqu();
     treg_data_data slope();
-    treg_data_data offset();
+    treg_data_data stand_dev_x();
+    treg_data_data stand_dev_y();
 
 private:
-
     bool bad_init_data;
 
     treg_data_data sumX();

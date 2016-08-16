@@ -48,17 +48,18 @@
 #define MAINWINDOW_H
 
 #include <QtCore/QtGlobal>
+#include <QtDebug>
+#include <QFileDialog>
 #include <QIODevice>
 #include <QMainWindow>
-#include <QTextStream>
 #include <QMessageBox>
-#include <QFileDialog>
+#include <QProcess>
 #include <QtSerialPort/QSerialPort>
 #include <QSerialPortInfo>
+#include <QTextStream>
 #include <QTimer>
 #include <QList>
-//#include <QtSerialPort/QSerialPort>
-#include <QProcess>
+
 
 
 #include <qwt_plot.h>
@@ -73,6 +74,7 @@
 #include "parser.h"
 #include "moisturedialog.h"
 #include "dataplot.h"
+#include "instrumentdata.h"
 
 #define TEST_REG
 
@@ -95,55 +97,60 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-//    bool saveFileSwitch;
     QString saveFileName;
 
 protected:
     void closeEvent(QCloseEvent */*event*/) Q_DECL_OVERRIDE;
 
 private slots:
-    void openSerialPort();
-    void closeSerialPort();
-    void processSerialPort();
     void about();
-    void help();
-    void writeData(const QByteArray &data);
-    void readData();
-    void cleanData();
-    void handleError(QSerialPort::SerialPortError error);
-    void showSplash();
-    void endUpload();
-    bool saveAs();
     void copy();
-    void moisture();
-    void save();
-    void plotData();
+    void cleanData();
+    void closeSerialPort();
     void dlgEnter();
     void dlgFinish();
-    void openFile();
+    void endUpload();
+    void handleError(QSerialPort::SerialPortError error);
+    void help();
 #ifdef QT_DEBUG
     void loadExampleFile();
 #endif
+    void moisture();
+    void openFile();
+    void openSerialPort();
+    void plotData();
+    void processSerialPort();
+    void readData();
+    void save();
+    bool saveAs();
+    void showSplash();
+    void writeData(const QByteArray &data);
+
 private:
-    void initActionsConnections();
+
     bool checkSerialPort();
-    void loadTemp();
-    void updateConsole(QString line, int line_number);
-    int posGetPos(QString& data, int line_number, bool begin);
+    void displayInstData(); //display text from InstDataVector
     bool foundSerialPort;
+    void initActionsConnections();
+    QVector <InstrumentData> InstDataVector; //loaded with each line uploaded for localization purposes
+    void loadData(QString Data);
+    void loadTemp();
+    int posGetPos(QString& data, int line_number, bool begin);
     bool saveFile(const QString &fileName);
-    DataPlot* plot;
-    Ui::MainWindow *ui;
+    void updateConsole(QString line, int line_number);
+
     Console *console;
+    MoistureDialog *moistureData;
+    DataPlot* plot;
     QSerialPort *serial;
     QTimer *serialTimeOut;
-    MoistureDialog *moistureData;
+    Ui::MainWindow *ui;
 
-    static const QString rdFile(void){ return("rd.txt"); };    
-    static const QString tFile(void){ return("temp.txt");};
-    static const QString helpString(void){ return("hh.exe aggralinx.chm");};
 #ifdef  QT_DEBUG
     static const QString exampleFile(void){ return("AG_Sample_Data.txt"); };
 #endif
+    static const QString helpString(void){ return("hh.exe aggralinx.chm");};
+    static const QString rdFile(void){ return("rd.txt"); };
+    static const QString tFile(void){ return("temp.txt");};
 };
 #endif // MAINWINDOW_H
