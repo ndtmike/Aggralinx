@@ -14,16 +14,17 @@
 
 #ifndef INSTRUMENTDATA_H
 #define INSTRUMENTDATA_H
-#include <QString>
-#include <QTime>
+
+#include <QtCore/QtGlobal>
 #include <QDate>
 #include <QDateTime>
-#include <QMessageBox>
-#include <QDialog>
-#include <QtCore/QtGlobal>
-#include <QIODevice>
-#include <QTextStream>
 #include <QDebug>
+#include <QDialog>
+#include <QIODevice>
+#include <QMessageBox>
+#include <QString>
+#include <QTextStream>
+#include <QTime>
 
 class InstrumentData
 {
@@ -38,10 +39,14 @@ public:
     QString rawPercentage();
     QString rawReading();
     QString rawTime();
-    void updatePercentage(QString& percentage);
+
+    double readingToDouble();
+
     QDate toQDate();
     QDateTime toQDateTime();
     QTime toQTime();
+
+    void updatePercentage(QString& percentage);
 
 private:
     QVector <QString> Words;
@@ -49,10 +54,7 @@ private:
     static QString dummyData(void){return("00:00 00/00/00 000.0 Dummy xx.x");};
     static int rawDateIndex(void){return(1);};
     static int upDatePercentageIndex(void){return(27);};
-    static int rawMaterialIndex(void){return(3);};
     static int rawPercentageIndex(void){return(4);};
-    static int rawReadingIndex(void){return(2);};
-    static int rawTimeIndex(void){return(0);};
 };
 
 #endif // INSTRUMENTDATA_H

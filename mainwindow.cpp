@@ -182,14 +182,74 @@ void MainWindow::displayInstData()
     QString displaystring;
     QTextStream display(&displaystring);
 
+    display<<"United States - Default System"<<'\n';
+
     for( auto i = InstDataVector.begin();
         i != InstDataVector.end(); ++i){
-        display<<i->rawDate()<<' '
-               <<i->rawTime()<<' '
+
+        QDateTime idt = i->toQDateTime();
+
+        display<<idt.toString(Qt::DefaultLocaleShortDate)<<' '
                <<i->rawMaterial()<<' '
-               <<i->rawReading()<<'\n';
+               <<i->readingToDouble()<<'\n';
     }
     console->appendPlainText(displaystring);
+
+    displaystring.clear();
+    display<<"German"<<'\n';
+
+    QLocale::setDefault(QLocale(QLocale::German,QLocale::Germany));
+    QLocale german;
+
+    for( auto i = InstDataVector.begin();
+        i != InstDataVector.end(); ++i){
+
+        QDateTime idt = i->toQDateTime();
+        double d = i->readingToDouble();
+
+        display<<idt.toString(Qt::DefaultLocaleShortDate)<<' '
+               <<i->rawMaterial()<<' '
+               <<german.toString(d)<<'\n';
+    }
+    console->appendPlainText(displaystring);
+
+    displaystring.clear();
+    display<<"Spain"<<'\n';
+
+    QLocale::setDefault(QLocale(QLocale::Spanish,QLocale::Spain));
+    QLocale spain;
+
+    for( auto i = InstDataVector.begin();
+        i != InstDataVector.end(); ++i){
+
+        QDateTime idt = i->toQDateTime();
+        double d = i->readingToDouble();
+
+        display<<idt.toString(Qt::DefaultLocaleShortDate)<<' '
+               <<i->rawMaterial()<<' '
+               <<spain.toString(d)<<'\n';
+    }
+    console->appendPlainText(displaystring);
+
+    displaystring.clear();
+    display<<"Mexico"<<'\n';
+
+    QLocale::setDefault(QLocale(QLocale::Spanish,QLocale::Mexico));
+    QLocale mexico;
+
+    for( auto i = InstDataVector.begin();
+        i != InstDataVector.end(); ++i){
+
+        QDateTime idt = i->toQDateTime();
+        double d = i->readingToDouble();
+
+        display<<idt.toString(Qt::DefaultLocaleShortDate)<<' '
+               <<i->rawMaterial()<<' '
+               <<mexico.toString(d)<<'\n';
+    }
+    console->appendPlainText(displaystring);
+
+    QLocale::setDefault(QLocale::system());
 }
 
 void MainWindow::dlgEnter()

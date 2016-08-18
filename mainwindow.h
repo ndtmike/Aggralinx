@@ -49,18 +49,21 @@
 
 #include <QtCore/QtGlobal>
 #include <QtDebug>
+
+#include <QDate>
+#include <QDateTime>
 #include <QFileDialog>
 #include <QIODevice>
+#include <QList>
+#include <QLocale>
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QProcess>
 #include <QtSerialPort/QSerialPort>
 #include <QSerialPortInfo>
 #include <QTextStream>
+#include <QTime>
 #include <QTimer>
-#include <QList>
-
-
 
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>

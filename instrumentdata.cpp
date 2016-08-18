@@ -26,14 +26,12 @@ InstrumentData::InstrumentData(const QString& dataIn)
 
     QTextStream textin(&rawInput);
     QString word;
-    QVector <QString> Words;
 
     while( textin.status() == QTextStream::Ok) {
             textin >> word;
             qDebug() << word;
             if(word != "") Words.push_back(word);
     }
-
 }
 
 InstrumentData::~InstrumentData()
@@ -43,14 +41,12 @@ InstrumentData::~InstrumentData()
 
 QString InstrumentData::rawDate()
 {
-//    QString buffer = rawInput.section(" ",rawDateIndex(),rawDateIndex());
-    return Words[1];
+      return Words[1];
 }
 
 QString InstrumentData::rawMaterial()
 {
-//    QString buffer = rawInput.section(" ",rawMaterialIndex(),rawMaterialIndex());
-    return Words[3];
+      return Words[3];
 }
 
 QString InstrumentData::rawPercentage()
@@ -61,13 +57,11 @@ QString InstrumentData::rawPercentage()
 
 QString InstrumentData::rawReading()
 {
-//    QString buffer = rawInput.section(" ",rawReadingIndex(),rawReadingIndex());
     return Words[2];
 }
 
 QString InstrumentData::rawTime()
 {
-//     QString buffer = rawInput.section(" ",rawTimeIndex(),rawTimeIndex());
      return Words[0];
 }
 
@@ -76,11 +70,33 @@ void InstrumentData::updatePercentage(QString &percentage)
     rawInput = rawInput.left(upDatePercentageIndex())+' '+ percentage;
 }
 
+double InstrumentData::readingToDouble()
+{
+    double r;
+    QString s = Words[2];
+    QTextStream ss(&s);
+    ss>>r;
+    if( ss.status() != QTextStream::Ok){
+        r=0.0;
+        QMessageBox::information(NULL,"Data","Bad Reading Data");
+    }
+    return r;
+}
+
 QDate InstrumentData::toQDate()
 {
-    QDate output;
-    QString buffer = this->rawDate();
-    output = QDate::fromString( buffer,"MM'/'DD'/'YYYY");
+    QDate output, bad;
+
+    bad = QDate::fromString("01/01/0001","MM'/'dd'/'yyyy");
+
+    QString buffer = rawDate();
+
+    output = QDate::fromString( buffer,"MM'/'dd'/'yy");
+    output = output.year() < 2016 ? output.addYears(100):output; //stops date being 1900's
+
+    output = (output.isValid() == true)? output : bad; //returns all 1's if bad data in
+
+    qDebug() << buffer << ' ' << output.toString();
     return(output);
 }
 
@@ -91,9 +107,14 @@ QDateTime InstrumentData::toQDateTime()
 
 QTime InstrumentData::toQTime()
 {
-    QTime output;
-    QString buffer = this->rawTime();
-    output =QTime::fromString(buffer, "HH':'MM");
+    QTime output, bad;
+
+    bad = QTime::fromString("00:00","hh':'mm"); //for bad data in string field
+
+    QString buffer = rawTime();
+    output = QTime::fromString(buffer, "hh':'mm");
+
+    output = (output.isValid() == true)? output : bad; //returns zero if bad data
 
     return(output);
 }
