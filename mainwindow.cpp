@@ -59,11 +59,8 @@ MainWindow::MainWindow(QWidget *parent) :
     serialTimeOut = new QTimer(this);
     plot = new DataPlot(this);
 
-    initActionsConnections();
     saveFileName = "";
-
-    connect(moistureData, SIGNAL(btnEnterClick()), this, SLOT(dlgEnter()));
-    connect(moistureData, SIGNAL(btnFinishClick()), this, SLOT(dlgFinish()));
+    initActionsConnections();
 
     connect(serial, SIGNAL(error(QSerialPort::SerialPortError)), this,
             SLOT(handleError(QSerialPort::SerialPortError)));
@@ -157,6 +154,48 @@ void MainWindow::cleanData()
     ui->actionMoisture->setEnabled(true);
 }
 
+QString MainWindow::createDataLine(QVector<InstrumentData>::Iterator i){
+
+    QString displaystring;
+    QTextStream display(&displaystring);
+
+    QDateTime idt = i->toQDateTime();
+
+    QString matstr;
+    InstrumentData::Material mat = i->toMaterial();
+
+    switch (mat){
+        case InstrumentData::Sand:
+            matstr = tr("Sand");
+            break;
+        case InstrumentData::Gravel:
+            matstr = tr("Gravel");
+            break;
+        case InstrumentData::Crushed_Stone:
+            matstr = tr("Crushed Stone");
+            break;
+        case InstrumentData::Direct:
+            matstr = tr("Direct");
+            break;
+        case InstrumentData::Bad_Data:
+            matstr = tr("Bad Data");
+            break;
+    }
+
+    QString reading;
+    reading = QString("%L1").arg(i->readingToDouble(),0,'f',1);
+    reading = i->isMaterialDirect()? reading : reading.append( QString('%'));
+
+    QString percent;
+    percent = i->percentageToDouble() == -1.0 ? "": QString("%L1").arg(i->percentageToDouble(),0,'f',1) + '%';
+
+    display<<idt.toString(Qt::DefaultLocaleShortDate)<<' '
+           <<matstr<<' '
+           <<reading<<' '
+           <<percent<<'\n';
+
+    return(displaystring);
+}
 
 void MainWindow::copy()
 {
@@ -180,21 +219,15 @@ void MainWindow::closeSerialPort()
 void MainWindow::displayInstData()
 {
     QString displaystring;
-    QTextStream display(&displaystring);
 
-    display<<"United States - Default System"<<'\n';
-
-    for( auto i = InstDataVector.begin();
+    for( QVector<InstrumentData>::Iterator i = InstDataVector.begin();
         i != InstDataVector.end(); ++i){
 
-        QDateTime idt = i->toQDateTime();
+        displaystring += createDataLine(i);
 
-        display<<idt.toString(Qt::DefaultLocaleShortDate)<<' '
-               <<i->rawMaterial()<<' '
-               <<i->readingToDouble()<<'\n';
     }
     console->appendPlainText(displaystring);
-
+/*
     displaystring.clear();
     display<<"German"<<'\n';
 
@@ -204,12 +237,7 @@ void MainWindow::displayInstData()
     for( auto i = InstDataVector.begin();
         i != InstDataVector.end(); ++i){
 
-        QDateTime idt = i->toQDateTime();
-        double d = i->readingToDouble();
-
-        display<<idt.toString(Qt::DefaultLocaleShortDate)<<' '
-               <<i->rawMaterial()<<' '
-               <<german.toString(d)<<'\n';
+        displaystring += createDataLine(i);
     }
     console->appendPlainText(displaystring);
 
@@ -217,17 +245,11 @@ void MainWindow::displayInstData()
     display<<"Spain"<<'\n';
 
     QLocale::setDefault(QLocale(QLocale::Spanish,QLocale::Spain));
-    QLocale spain;
+    QLocale spain;4
 
     for( auto i = InstDataVector.begin();
         i != InstDataVector.end(); ++i){
-
-        QDateTime idt = i->toQDateTime();
-        double d = i->readingToDouble();
-
-        display<<idt.toString(Qt::DefaultLocaleShortDate)<<' '
-               <<i->rawMaterial()<<' '
-               <<spain.toString(d)<<'\n';
+        displaystring += createDataLine(i);
     }
     console->appendPlainText(displaystring);
 
@@ -239,17 +261,24 @@ void MainWindow::displayInstData()
 
     for( auto i = InstDataVector.begin();
         i != InstDataVector.end(); ++i){
-
-        QDateTime idt = i->toQDateTime();
-        double d = i->readingToDouble();
-
-        display<<idt.toString(Qt::DefaultLocaleShortDate)<<' '
-               <<i->rawMaterial()<<' '
-               <<mexico.toString(d)<<'\n';
+        displaystring += createDataLine(i);
     }
     console->appendPlainText(displaystring);
 
     QLocale::setDefault(QLocale::system());
+*/
+}
+void MainWindow::dlgBack()
+{
+
+    if(dlgInstDataVectorIterator- InstDataVector.begin()>0){
+        --dlgInstDataVectorIterator;
+    }else{
+        dlgInstDataVectorIterator = InstDataVector.end();
+        --dlgInstDataVectorIterator; //end is one past crashes when pointed at
+    }
+    dlgUpdate();
+//    qDebug()<<"Back Button"<<dlgInstDataVectorIterator-InstDataVector.begin();
 }
 
 void MainWindow::dlgEnter()
@@ -257,25 +286,50 @@ void MainWindow::dlgEnter()
     QString line = "";
     int line_number = 0;
 
-    if(moistureData->list_iterator > 0){
-        line = moistureData->combinedData[moistureData->list_iterator-1].rawInput;
-        line_number = moistureData->list_iterator;
-    }else{
-        line = moistureData->combinedData.last().rawInput;
-        line_number = moistureData->combinedData.size();
-    }
-
     updateConsole(line, line_number);
 
-    moistureData->show();
-    moistureData->activateWindow();
-    moistureData->raise();
+
     moistureData->setFocus();
 }
 
 void MainWindow::dlgFinish()
 {
     plot->createPoints( console->toPlainText() );
+}
+
+void MainWindow::dlgForward()
+{
+    if(InstDataVector.end() - dlgInstDataVectorIterator > 1){//end is one past crashes when pointed at
+        ++dlgInstDataVectorIterator;
+    }else{
+        dlgInstDataVectorIterator = InstDataVector.begin();
+    }
+    dlgUpdate();
+   // qDebug()<<"Forward Button"<<dlgInstDataVectorIterator-InstDataVector.begin();
+}
+
+void MainWindow::dlgMoisture()
+{
+    dlgInstDataVectorIterator=InstDataVector.begin();
+
+    dlgUpdate();
+}
+
+void MainWindow::dlgUpdate()
+{
+    QString testdatetime, testpercent;
+    QTextStream testdatetimestream(&testdatetime);
+
+    testdatetimestream << tr("Test Date and Time")<<'\n'
+                       << dlgInstDataVectorIterator->toQDateTime().toString(Qt::DefaultLocaleShortDate)<<'\n'<<'\n'
+                       << tr("Reading:")<<'\n'
+                       << QString("%L1").arg(dlgInstDataVectorIterator->readingToDouble(),0,'f',1);
+
+    testpercent = dlgInstDataVectorIterator->percentageToDouble() == -1.0 ? "":
+                 QString("%L1").arg(dlgInstDataVectorIterator->percentageToDouble(),0,'f',1) + '%';
+
+    moistureData->changedata(testdatetime, testpercent);
+    moistureData->display();
 }
 
 void MainWindow::handleError(QSerialPort::SerialPortError error)
@@ -334,10 +388,18 @@ void MainWindow::initActionsConnections()
     connect(ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveAs()));
     connect(ui->actionCopy, SIGNAL(triggered()), this, SLOT(copy()));
     connect(ui->actionHelp, SIGNAL(triggered()), this, SLOT(help()));
-    connect(ui->actionMoisture, SIGNAL(triggered()), this, SLOT(moisture()));
+    connect(ui->actionMoisture, SIGNAL(triggered()), this, SLOT(dlgMoisture()));
     connect(ui->actionPlot, SIGNAL(triggered()), this, SLOT(plotData()));
     connect(ui->action_Save, SIGNAL(triggered()), this, SLOT(save()));
     connect(ui->action_Open, SIGNAL(triggered()), this, SLOT(openFile()));
+
+//    connect(moistureData, SIGNAL(btnEnterClick()), this, SLOT(dlgEnter()));
+//    connect(moistureData, SIGNAL(btnFinishClick()), this, SLOT(dlgFinish()));
+
+    connect(moistureData, SIGNAL(btnBackClick()), this, SLOT(dlgBack()));
+    connect(moistureData, SIGNAL(btnEnterClick()), this, SLOT(dlgEnter()));
+    connect(moistureData, SIGNAL(btnFinishClick()), this, SLOT(dlgFinish()));
+    connect(moistureData, SIGNAL(btnForwardClick()), this, SLOT(dlgForward()));
 }
 
 void MainWindow::loadData(QString Data)
@@ -386,16 +448,6 @@ void MainWindow::loadTemp()
 #endif
     file.close();
     ui->actionMoisture->setEnabled(true);
-}
-
-void MainWindow::moisture()
-{
-    saveFile(tFile());
-
-    if(!(moistureData->loadFile(tFile()))){ //moisturedialog does not wait for input
-            return ;
-    }
-    moistureData->show();
 }
 
 void MainWindow::openFile()

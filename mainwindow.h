@@ -49,7 +49,6 @@
 
 #include <QtCore/QtGlobal>
 #include <QtDebug>
-
 #include <QDate>
 #include <QDateTime>
 #include <QFileDialog>
@@ -110,15 +109,20 @@ private slots:
     void copy();
     void cleanData();
     void closeSerialPort();
+
+    void dlgBack();
     void dlgEnter();
     void dlgFinish();
+    void dlgForward();
+    void dlgMoisture();
+
     void endUpload();
     void handleError(QSerialPort::SerialPortError error);
     void help();
 #ifdef QT_DEBUG
     void loadExampleFile();
 #endif
-    void moisture();
+
     void openFile();
     void openSerialPort();
     void plotData();
@@ -132,10 +136,13 @@ private slots:
 private:
 
     bool checkSerialPort();
+    QString createDataLine(QVector<InstrumentData>::Iterator i); //reads data form InstDataVector and returns local string
     void displayInstData(); //display text from InstDataVector
+    void dlgUpdate();
     bool foundSerialPort;
     void initActionsConnections();
     QVector <InstrumentData> InstDataVector; //loaded with each line uploaded for localization purposes
+    QVector <InstrumentData> ::iterator dlgInstDataVectorIterator;
     void loadData(QString Data);
     void loadTemp();
     int posGetPos(QString& data, int line_number, bool begin);
