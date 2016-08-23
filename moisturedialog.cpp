@@ -67,6 +67,13 @@ void MoistureDialog::forward()
     emit btnForwardClick();
 }
 
+QString MoistureDialog::getPercent()
+{
+    QString out;
+    out = ui->lePercentStr->text();
+    return out;
+}
+
 void MoistureDialog::backward()
 {
     emit btnBackClick();

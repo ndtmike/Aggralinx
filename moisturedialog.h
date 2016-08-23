@@ -43,6 +43,7 @@ public:
     ~MoistureDialog();
 
     void changedata(QString texttime, QString testpercent);
+    QString getPercent();
     void display();
 
 signals:

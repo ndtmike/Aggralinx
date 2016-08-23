@@ -36,7 +36,7 @@ class DataPlot : public QwtPlot
 {
      Q_OBJECT
 public:
-    explicit DataPlot(QWidget* /*parent*/);
+    explicit DataPlot(QWidget*);
     ~DataPlot();
 
     void createPoints(const QString& rawdata);

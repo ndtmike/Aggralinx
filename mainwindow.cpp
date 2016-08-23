@@ -187,7 +187,7 @@ QString MainWindow::createDataLine(QVector<InstrumentData>::Iterator i){
     reading = i->isMaterialDirect()? reading : reading.append( QString('%'));
 
     QString percent;
-    percent = i->percentageToDouble() == -1.0 ? "": QString("%L1").arg(i->percentageToDouble(),0,'f',1) + '%';
+    percent = i->getPercent() == -1.0 ? "": QString("%L1").arg(i->getPercent(),0,'f',1) + '%';
 
     display<<idt.toString(Qt::DefaultLocaleShortDate)<<' '
            <<matstr<<' '
@@ -278,16 +278,35 @@ void MainWindow::dlgBack()
         --dlgInstDataVectorIterator; //end is one past crashes when pointed at
     }
     dlgUpdate();
-//    qDebug()<<"Back Button"<<dlgInstDataVectorIterator-InstDataVector.begin();
 }
 
 void MainWindow::dlgEnter()
 {
-    QString line = "";
-    int line_number = 0;
+    QString percentstring;
+    double percentdouble;
+    bool ok = true;
+    QTextStream percentstream(&percentstring);
 
-    updateConsole(line, line_number);
+    percentstring = moistureData->getPercent();
+    percentstream >>percentdouble;
 
+    qDebug()<< "String: "<< percentstring << "Double: "<< percentdouble;
+
+    if(percentstream.status() != QTextStream::Ok){
+        QMessageBox::information(this, tr("Enter"), tr("Bad Percent Data"));
+        ok = false;
+    }else{//all is good check range
+        ok = dlgInstDataVectorIterator->updateTestPercent(percentdouble);
+        if(ok == false){
+            QMessageBox::information(this,tr("Enter"),tr("Percent Data Out of Range"));
+        }
+    }
+    qDebug() << "Percent: "<<dlgInstDataVectorIterator->getPercent()<<'\n';
+    if(ok == true){//everything good update console
+        console->setPlainText("");
+        displayInstData();
+        dlgForward();
+    }
 
     moistureData->setFocus();
 }
@@ -305,7 +324,6 @@ void MainWindow::dlgForward()
         dlgInstDataVectorIterator = InstDataVector.begin();
     }
     dlgUpdate();
-   // qDebug()<<"Forward Button"<<dlgInstDataVectorIterator-InstDataVector.begin();
 }
 
 void MainWindow::dlgMoisture()
@@ -325,8 +343,8 @@ void MainWindow::dlgUpdate()
                        << tr("Reading:")<<'\n'
                        << QString("%L1").arg(dlgInstDataVectorIterator->readingToDouble(),0,'f',1);
 
-    testpercent = dlgInstDataVectorIterator->percentageToDouble() == -1.0 ? "":
-                 QString("%L1").arg(dlgInstDataVectorIterator->percentageToDouble(),0,'f',1) + '%';
+    testpercent = dlgInstDataVectorIterator->getPercent() == -1.0 ? "":
+                 QString("%L1").arg(dlgInstDataVectorIterator->getPercent(),0,'f',1) + '%';
 
     moistureData->changedata(testdatetime, testpercent);
     moistureData->display();
@@ -392,9 +410,6 @@ void MainWindow::initActionsConnections()
     connect(ui->actionPlot, SIGNAL(triggered()), this, SLOT(plotData()));
     connect(ui->action_Save, SIGNAL(triggered()), this, SLOT(save()));
     connect(ui->action_Open, SIGNAL(triggered()), this, SLOT(openFile()));
-
-//    connect(moistureData, SIGNAL(btnEnterClick()), this, SLOT(dlgEnter()));
-//    connect(moistureData, SIGNAL(btnFinishClick()), this, SLOT(dlgFinish()));
 
     connect(moistureData, SIGNAL(btnBackClick()), this, SLOT(dlgBack()));
     connect(moistureData, SIGNAL(btnEnterClick()), this, SLOT(dlgEnter()));
@@ -604,7 +619,7 @@ void MainWindow::showSplash()
     QTimer* splash_timer = new QTimer(this);
     splash_timer->singleShot(five_sec, this, SLOT(processSerialPort()));
 }
-
+/*
 void MainWindow::updateConsole(QString line, int line_number)
 {
     QString consoledata = console->toPlainText();
@@ -624,7 +639,7 @@ void MainWindow::updateConsole(QString line, int line_number)
     console->setPlainText("");
     console->setPlainText(consoledata);
 }
-
+*/
 void MainWindow::writeData(const QByteArray &data)
 {
     serial->write(data);

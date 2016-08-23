@@ -66,6 +66,11 @@ bool InstrumentData::isMaterialDirect()
     return(out);
 }
 
+double InstrumentData::getPercent()
+{
+    return(TestPercentage);
+}
+
 QString InstrumentData::rawDate()
 {
       return Words[1];

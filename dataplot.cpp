@@ -14,7 +14,7 @@
 
 #include "dataplot.h"
 
-DataPlot::DataPlot( QWidget* /*parent*/ )
+DataPlot::DataPlot( QWidget* )
 {
     createClasses();
     SetPlotParameters();
@@ -51,15 +51,15 @@ void DataPlot::createPoints(const QString& rawdata)
 {
     QString working = rawdata;
     QString line = "";
+    qDebug()<< rawdata;
+    QStringList datalines = rawdata.split("\n", QString::SkipEmptyParts);
+
     plotDataPoints.clear();
 
-    for(int posendline = working.indexOf('\n',0);
-        working.indexOf('\n',posendline) != endLineConst();
-        posendline = working.indexOf('\n',0)){
-        line = working.left( posendline);//end of line
+    foreach (line, datalines) {
         if(!loadPlotDataPoints(line)) return;
-        working.remove(0, posendline+1);
-     }
+    }
+
     displayGraph(plotDataPoints);
 }
 
@@ -123,23 +123,31 @@ void DataPlot::displayRegParameters(const QString &in){
 bool DataPlot::loadPlotDataPoints(const QString& line)
 {
     bool success = false;
-    QString reading = "";
-    QString moisture = "";
     double dr = 0.0;
     double dm = 0.0;
+    QString buffer;
+    QTextStream bufferstream(& buffer);
 
-    if(line.size() > lineSizeConst()){
+    QStringList words = line.split(" ");
+    QStringList::iterator wordsiterator = words.end()-1;
+    buffer = *wordsiterator;
+    if(buffer.count('%') != 0){
+        buffer = buffer.remove('%');
+        bufferstream.setString(&buffer); //had to reset string in buffer in order to double result
+        bufferstream >> dm;
+        --wordsiterator;
+        buffer = *wordsiterator;
+        bufferstream.setString(&buffer); //reset string in buffer in order to get double output
+        bufferstream >> dr;
         success = true;
-        reading = line.mid(readingPosConst(),readingWidthConst());
-        moisture = line.mid(moisturePosConst());
-        dr = reading.toDouble();
-        dm = moisture.toDouble();
     }else{
         QMessageBox::information(this,"Aggralinx",
             tr("Data Not Entered!"));
     }
-    plotDataPoints << QPointF(dr,dm);
 
+    qDebug()<< dr << dm;
+
+    plotDataPoints << QPointF(dr,dm);
     return(success);
 }
 

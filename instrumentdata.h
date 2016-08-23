@@ -35,12 +35,12 @@ public:
     InstrumentData();
     InstrumentData(const QString& dataIn);
     ~InstrumentData();
-
+//These need to be rethought but for now ok
     bool isMaterialDirect();
-    double percentageToDouble(); //calculated percentage always get percent sign
+    double getPercent(); //should replace percentagetodouble with this, & something similar with reading to
     double readingToDouble(); // from instruments gets percent sign when not direct, call isMaterialDirect()
-    Material toMaterial();
-    QDate toQDate();
+    Material toMaterial(); //from initstring
+    QDate toQDate(); //from initstring
     QDateTime toQDateTime();
     QTime toQTime();
     bool updateTestPercent(const double &value);
@@ -56,6 +56,7 @@ private:
 
 
     QString cleanWord(QString data);
+    double percentageToDouble(); //calculated percentage always get percent sign from initstring
     QString rawDate();
     QString rawInput;
     QString rawMaterial();
