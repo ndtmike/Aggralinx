@@ -36,7 +36,7 @@ class DataPlot : public QwtPlot
 {
      Q_OBJECT
 public:
-    explicit DataPlot(QWidget* /*parent*/);
+    explicit DataPlot(QWidget*);
     ~DataPlot();
 
     void createPoints(const QString& rawdata);
@@ -55,15 +55,13 @@ private:
     void SetPlotParameters();
     void SetRCurveParameters();
 
-
-    QwtPlot* Plot;
     QwtPlotCurve* Curve;
     QwtPlotCurve* rCurve;
     QwtPlotGrid* Grid;
-    QwtSymbol* Symbol;
-    QwtSymbol* rSymbol;
-
+    QwtPlot* Plot;
     QPolygonF plotDataPoints;
+    QwtSymbol* rSymbol;
+    QwtSymbol* Symbol;
 
     static int endLineConst(void){ return(-1); };
     static int readingPosConst(void){ return(15); };

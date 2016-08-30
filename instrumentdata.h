@@ -14,45 +14,61 @@
 
 #ifndef INSTRUMENTDATA_H
 #define INSTRUMENTDATA_H
-#include <QString>
-#include <QTime>
+
+#include <QtCore/QtGlobal>
 #include <QDate>
 #include <QDateTime>
-#include <QMessageBox>
+#include <QDebug>
 #include <QDialog>
-#include <QtCore/QtGlobal>
 #include <QIODevice>
+#include <QMessageBox>
+#include <QString>
 #include <QTextStream>
-
+#include <QTime>
 
 class InstrumentData
 {
 public:
+
+    enum Material{ Sand, Gravel, Crushed_Stone, Direct, Bad_Data };
+
     InstrumentData();
-    InstrumentData(QString& dataIn);
+    InstrumentData(const QString& dataIn);
     ~InstrumentData();
-
-    QString rawInput;
-    QString rawTime();
-    QString rawDate();
-    QString rawReading();
-    QString rawMaterial();
-    QString rawPercentage();
-    void updatePercentage(QString& percentage);
-
-    QTime toQTime();
-    QDate toQDate();
+//These need to be rethought but for now ok
+    bool isMaterialDirect();
+    double getPercent(); //should replace percentagetodouble with this, & something similar with reading to
+    double readingToDouble(); // from instruments gets percent sign when not direct, call isMaterialDirect()
+    Material toMaterial(); //from initstring
+    QDate toQDate(); //from initstring
     QDateTime toQDateTime();
+    QTime toQTime();
+    bool updateTestPercent(const double &value);
 
 private:
-    static QString dummyData(void)
-        {return("00:00 00/00/00 000.0 Dummy xx.x");};
-    static int rawTimeIndex(void){return(0);};
-    static int rawDateIndex(void){return(1);};
-    static int rawReadingIndex(void){return(2);};
-    static int rawMaterialIndex(void){return(3);};
-    static int rawPercentageIndex(void){return(4);};
-    static int upDatePercentageIndex(void){return(27);};
+
+    QDate TestDate;
+    QDateTime TestDateTime;
+    Material TestMaterial;
+    double TestPercentage;
+    double TestReading;
+    QTime TestTime;
+
+
+    QString cleanWord(QString data);
+    double percentageToDouble(); //calculated percentage always get percent sign from initstring
+    QString rawDate();
+    QString rawInput;
+    QString rawMaterial();
+    QString rawPercentage();
+    QString rawReading();
+    QString rawTime();
+    QVector <QString> Words;
+
+    static QString dummyData(void){return("00:00 00/00/00 000.0 Dummy xx.x");};
+//    static int rawDateIndex(void){return(1);};
+//    static int upDatePercentageIndex(void){return(27);};
+//    static int rawPercentageIndex(void){return(4);};
 };
 
 #endif // INSTRUMENTDATA_H
