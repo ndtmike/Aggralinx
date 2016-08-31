@@ -13,15 +13,26 @@
 ** -------------------------------------------------------------------------*/
 #include "instrumentdata.h"
 
+/*
+ * Blind Constructor with no input
+*/
+
 InstrumentData::InstrumentData()
 {
     rawInput = dummyData();
 }
 
+/*
+ * parses and constructs the object with a string input
+ * is there a problem after Localization?  Needs testing
+ */
+
 InstrumentData::InstrumentData(const QString& dataIn)
 {
 
     rawInput = dataIn;
+
+    qDebug()<< dataIn;
 
     QTextStream textin(&rawInput);
     QString word;
@@ -40,11 +51,17 @@ InstrumentData::InstrumentData(const QString& dataIn)
     TestPercentage = percentageToDouble();
 }
 
+/*
+ * Destructor
+ */
 InstrumentData::~InstrumentData()
 {
 
 }
 
+/*
+ * Removes bad characters
+ */
 QString InstrumentData::cleanWord(QString data)
 {
     QString out;
@@ -58,6 +75,10 @@ QString InstrumentData::cleanWord(QString data)
     return out;
 }
 
+/*
+ * Sets boolean parameter for graphing
+ */
+
 bool InstrumentData::isMaterialDirect()
 {
     bool out;
@@ -66,20 +87,36 @@ bool InstrumentData::isMaterialDirect()
     return(out);
 }
 
+/*
+ * method to get percent parameter
+ */
+
 double InstrumentData::getPercent()
 {
     return(TestPercentage);
 }
+
+/*
+ * method to get raw date string
+ */
 
 QString InstrumentData::rawDate()
 {
       return Words[1];
 }
 
+/*
+ * method to get raw date string
+ */
+
 QString InstrumentData::rawMaterial()
 {
       return Words[3];
 }
+
+/*
+ * method to get raw percentage string
+ */
 
 QString InstrumentData::rawPercentage()
 {
@@ -89,23 +126,35 @@ QString InstrumentData::rawPercentage()
     return out;
 }
 
+/*
+ * method to get raw reading string
+ */
+
 QString InstrumentData::rawReading()
 {
     return Words[2];
 }
+
+/*
+ * method to get raw time string
+ */
 
 QString InstrumentData::rawTime()
 {
      return Words[0];
 }
 
+/*
+ * method to get percentage as double
+ */
+
 double InstrumentData::percentageToDouble()
 {
     double r;
     QString s;
 
-    if(Words.size() == 5){
-        s = Words[4];
+    if(Words.size() == 6){
+        s = Words[5];
     }else {
         s = "-1.0";
     }
@@ -120,10 +169,14 @@ double InstrumentData::percentageToDouble()
     return r;
 }
 
+/*
+ * method to get reading as double
+ */
+
 double InstrumentData::readingToDouble()
 {
     double r;
-    QString s = Words[2];
+    QString s = Words[4];
     QTextStream ss(&s);
 
     ss>>r;
@@ -134,6 +187,11 @@ double InstrumentData::readingToDouble()
 
     return r;
 }
+
+/*
+ * method to get material as enum
+ * will probably need to save material as enum value
+ */
 
 InstrumentData::Material InstrumentData::toMaterial()
 {
@@ -146,6 +204,12 @@ InstrumentData::Material InstrumentData::toMaterial()
 
     return(material);
 }
+
+/*
+ * gets QDate Object
+ * needs to be tested for other locals
+ * when saved and restored
+ */
 
 QDate InstrumentData::toQDate()
 {
@@ -163,10 +227,20 @@ QDate InstrumentData::toQDate()
     return(output);
 }
 
+/*
+ * combines QDate and QTime to QDateTime object
+ */
+
 QDateTime InstrumentData::toQDateTime()
 {
     return(QDateTime(this->toQDate(),this->toQTime()));
 }
+
+/*
+ * gets QTime Object
+ * needs to be tested for other locals
+ * when saved and restored
+ */
 
 QTime InstrumentData::toQTime()
 {
@@ -182,7 +256,11 @@ QTime InstrumentData::toQTime()
     return(output);
 }
 
-bool InstrumentData::updateTestPercent(const double &value){
+/*
+ * Enter the test percent in parameters
+ */
+bool InstrumentData::updateTestPercent(const double &value)
+{
 
     bool result;
 

@@ -119,9 +119,6 @@ private slots:
     void endUpload();
     void handleError(QSerialPort::SerialPortError error);
     void help();
-#ifdef QT_DEBUG
-    void loadExampleFile();
-#endif
 
     void openFile();
     void openSerialPort();
@@ -131,7 +128,7 @@ private slots:
     void save();
     bool saveAs();
     void showSplash();
-    void writeData(const QByteArray &data);
+
 
 private:
 
@@ -144,7 +141,6 @@ private:
     QVector <InstrumentData> InstDataVector; //loaded with each line uploaded for localization purposes
     QVector <InstrumentData> ::iterator dlgInstDataVectorIterator;
     void loadData(QString Data);
-    void loadTemp();
     int posGetPos(QString& data, int line_number, bool begin);
     bool saveFile(const QString &fileName);
     void updateConsole(QString line, int line_number);
@@ -156,9 +152,6 @@ private:
     QTimer *serialTimeOut;
     Ui::MainWindow *ui;
 
-#ifdef  QT_DEBUG
-    static const QString exampleFile(void){ return("AG_Sample_Data.txt"); };
-#endif
     static const QString helpString(void){ return("hh.exe aggralinx.chm");};
     static const QString rdFile(void){ return("rd.txt"); };
     static const QString tFile(void){ return("temp.txt");};

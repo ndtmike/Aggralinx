@@ -1,4 +1,5 @@
-
+#Created for Localization of Aggrameter
+#
 #
 QT += widgets serialport
 
@@ -9,7 +10,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     console.cpp \
-    parser.cpp \
+#    parser.cpp \
     splash.cpp \
     dataplot.cpp \
     moisturedialog.cpp \
@@ -19,7 +20,6 @@ SOURCES += \
 HEADERS += \
     mainwindow.h \
     console.h \
-    parser.h \
     splash.h \
     dataplot.h \
     moisturedialog.h \
@@ -35,6 +35,9 @@ RESOURCES += \
     terminal.qrc
 
 DISTFILES +=
+
+TRANSLATIONS += Internationalization_de.ts \
+               Internationalization_es.ts
 
 win32{
 RC_ICONS += ../icon/NDT_agg1.ico

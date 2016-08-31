@@ -47,9 +47,8 @@
 
 #include "console.h"
 
-#include <QScrollBar>
-
-#include <QtCore/QDebug>
+/*Constructor - sets a few parameters and style fo
+ * Text display */
 
 Console::Console(QWidget *parent)
     : QPlainTextEdit(parent)
@@ -62,6 +61,8 @@ Console::Console(QWidget *parent)
     setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 }
 
+/*Displays a QByteArray of data*/
+
 void Console::putData(const QByteArray &data)
 {    
     insertPlainText(QString(data));
@@ -70,11 +71,15 @@ void Console::putData(const QByteArray &data)
     bar->setValue(bar->maximum());
 }
 
+/* Not entirely sure what this is for
+ * Maybe an artifact from modified code
+ * */
+
 void Console::setLocalEchoEnabled(bool set)
 {
     localEchoEnabled = set;
 }
-
+/*
 void Console::keyPressEvent(QKeyEvent *e)
 {
     switch (e->key()) {
@@ -90,12 +95,17 @@ void Console::keyPressEvent(QKeyEvent *e)
         emit getData(e->text().toLocal8Bit());
     }
 }
+*/
+
+/*sets Focus when clicked on */
 
 void Console::mousePressEvent(QMouseEvent *e)
 {
     Q_UNUSED(e)
     setFocus();
 }
+
+/*not really sure why these are here and need to look up Q_UNUSED*/
 
 void Console::mouseDoubleClickEvent(QMouseEvent *e)
 {

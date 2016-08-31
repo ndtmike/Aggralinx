@@ -47,6 +47,16 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+/*
+ * Main window constructor
+ * Loads ui
+ *      console to display data
+ *      serial port for communications
+ *      dialog to enter moisture data
+ *      timer to show splash screen
+ *      window to show data that's plotted
+ */
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -61,25 +71,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     saveFileName = "";
     initActionsConnections();
-
-    connect(serial, SIGNAL(error(QSerialPort::SerialPortError)), this,
-            SLOT(handleError(QSerialPort::SerialPortError)));
-    connect(serial, SIGNAL(readyRead()), this, SLOT(readData()));
-    connect(console, SIGNAL(getData(QByteArray)), this, SLOT(writeData(QByteArray)));
-    connect(serialTimeOut,SIGNAL(timeout()), this,SLOT(endUpload()));
-#ifndef QT_DEBUG
     QTimer* init_timer = new QTimer(this);
     init_timer->singleShot(100, this, SLOT(showSplash()));
-#else
-#ifdef TEST_REG
-    QTimer* init_timer = new QTimer(this);
-    init_timer->singleShot(100, this, SLOT(showSplash()));
-#else
-    QTimer* init_timer = new QTimer(this);
-    init_timer->singleShot(100, this, SLOT(loadExampleFile()));
-#endif
-#endif
 }
+
+/*
+ * Main Destructor deletes all objects
+ */
 
 MainWindow::~MainWindow()
 {
@@ -90,6 +88,10 @@ MainWindow::~MainWindow()
     delete moistureData;
     delete serial;
 }
+
+/*
+ * Displays details regarding software
+*/
 
 void MainWindow::about()
 {
@@ -109,6 +111,10 @@ void MainWindow::about()
 
     QMessageBox::information(this, tr("About Aggrameter"), s);
 }
+
+/*
+ * Checks for existance of serial port, not tested with linux
+*/
 
 bool MainWindow::checkSerialPort()
 {
@@ -147,12 +153,21 @@ bool MainWindow::checkSerialPort()
     return(r);
 }
 
+/*
+ * Superfluous?  Needs to be checked?
+*/
+
 void MainWindow::cleanData()
 {
-    Parser* p = new Parser(rdFile(), tFile());
-    delete p;
     ui->actionMoisture->setEnabled(true);
 }
+
+/*
+ * after data is loaded it is turned into a vector of
+ * InstrumentData objects.
+ * Set up as group of numbers that is 'localized'
+ * enum for material needs to be checked
+ */
 
 QString MainWindow::createDataLine(QVector<InstrumentData>::Iterator i){
 
@@ -192,10 +207,14 @@ QString MainWindow::createDataLine(QVector<InstrumentData>::Iterator i){
     display<<idt.toString(Qt::DefaultLocaleShortDate)<<' '
            <<matstr<<' '
            <<reading<<' '
-           <<percent<<'\n';
+           <<percent<<endl;
 
     return(displaystring);
 }
+
+/*
+ * allows copy for copy and paste
+ */
 
 void MainWindow::copy()
 {
@@ -203,10 +222,18 @@ void MainWindow::copy()
     console->copy();
 }
 
+/*
+ * closes the data plot when application closes
+ */
+
 void MainWindow::closeEvent (QCloseEvent* /*event*/)
 {
     plot->close();
 }
+
+/*
+ * closes the serial port when application closes
+ */
 
 void MainWindow::closeSerialPort()
 {
@@ -215,6 +242,10 @@ void MainWindow::closeSerialPort()
     console->setEnabled(false);
     ui->statusBar->showMessage(tr("Disconnected"));
 }
+
+/*
+ * outputs InstrumentData vector to console in localized form
+ */
 
 void MainWindow::displayInstData()
 {
@@ -268,6 +299,12 @@ void MainWindow::displayInstData()
     QLocale::setDefault(QLocale::system());
 */
 }
+
+/*
+ * moves through InstrumentData Vector when
+ * back button pushed
+ */
+
 void MainWindow::dlgBack()
 {
 
@@ -280,6 +317,12 @@ void MainWindow::dlgBack()
     dlgUpdate();
 }
 
+/*
+ * When enter button pressed on moisture dialog
+ * update percentage string with InstrumentData
+ * Vector and display same
+ */
+
 void MainWindow::dlgEnter()
 {
     QString percentstring;
@@ -290,8 +333,6 @@ void MainWindow::dlgEnter()
     percentstring = moistureData->getPercent();
     percentstream >>percentdouble;
 
-    qDebug()<< "String: "<< percentstring << "Double: "<< percentdouble;
-
     if(percentstream.status() != QTextStream::Ok){
         QMessageBox::information(this, tr("Enter"), tr("Bad Percent Data"));
         ok = false;
@@ -301,7 +342,6 @@ void MainWindow::dlgEnter()
             QMessageBox::information(this,tr("Enter"),tr("Percent Data Out of Range"));
         }
     }
-    qDebug() << "Percent: "<<dlgInstDataVectorIterator->getPercent()<<'\n';
     if(ok == true){//everything good update console
         console->setPlainText("");
         displayInstData();
@@ -311,10 +351,20 @@ void MainWindow::dlgEnter()
     moistureData->setFocus();
 }
 
+/*
+ * All data entered and data and
+ * regression values need to calculated
+ */
+
 void MainWindow::dlgFinish()
 {
     plot->createPoints( console->toPlainText() );
 }
+
+/*
+ * moves through InstrumentData Vector when
+ * back button pushed
+ */
 
 void MainWindow::dlgForward()
 {
@@ -326,12 +376,21 @@ void MainWindow::dlgForward()
     dlgUpdate();
 }
 
+/*
+ * initially display constructor
+ */
+
 void MainWindow::dlgMoisture()
 {
     dlgInstDataVectorIterator=InstDataVector.begin();
 
     dlgUpdate();
 }
+
+/*
+ * loading moisture dialog with
+ * data from InstrumentData vector
+ */
 
 void MainWindow::dlgUpdate()
 {
@@ -350,6 +409,10 @@ void MainWindow::dlgUpdate()
     moistureData->display();
 }
 
+/*
+ * Catch serial port errors
+ */
+
 void MainWindow::handleError(QSerialPort::SerialPortError error)
 {
     if (error == QSerialPort::ResourceError) {
@@ -358,12 +421,24 @@ void MainWindow::handleError(QSerialPort::SerialPortError error)
     }
 }
 
+/*
+ * Display help file
+ */
+
 void MainWindow::help()
 {
     QProcess* help = new QProcess(this);
     help->start("hh.exe Aggralinx.chm");
 }
 
+/*
+ * After all data is uploaded and timer times out
+ * this function gets called
+ * saves data to temp filed
+ * Stops timer (one upload at a time)
+ * loads data in InstrumentData vector
+ * sets parameters that we NOW HAVE DATA
+ */
 void MainWindow::endUpload()
 {
     const QString outputfile = tFile();
@@ -392,6 +467,10 @@ void MainWindow::endUpload()
     ui->actionPlot->setEnabled(true);
 }
 
+/*
+ * creates actions and connections for program flow
+ */
+
 void MainWindow::initActionsConnections()
 {
     ui->actionQuit->setEnabled(true);
@@ -415,7 +494,17 @@ void MainWindow::initActionsConnections()
     connect(moistureData, SIGNAL(btnEnterClick()), this, SLOT(dlgEnter()));
     connect(moistureData, SIGNAL(btnFinishClick()), this, SLOT(dlgFinish()));
     connect(moistureData, SIGNAL(btnForwardClick()), this, SLOT(dlgForward()));
+
+    connect(serial, SIGNAL(error(QSerialPort::SerialPortError)), this,
+            SLOT(handleError(QSerialPort::SerialPortError)));
+    connect(serial, SIGNAL(readyRead()), this, SLOT(readData()));
+//    connect(console, SIGNAL(getData(QByteArray)), this, SLOT(writeData(QByteArray)));
+    connect(serialTimeOut,SIGNAL(timeout()), this,SLOT(endUpload()));
 }
+
+/*
+ * Loads InstrumentData Vector with each line
+ */
 
 void MainWindow::loadData(QString Data)
 {
@@ -426,44 +515,9 @@ void MainWindow::loadData(QString Data)
     }
 }
 
-#ifdef QT_DEBUG
-void MainWindow::loadExampleFile()
-{
-    QFile file(exampleFile());
-    QTextStream load(&file);
-#ifndef QT_NO_CURSOR
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-#endif
-    console->setPlainText("");
-    file.open(QFile::ReadOnly | QFile::Text);
-    QTextStream ReadFile(&file);
-    console->setPlainText(load.readAll());
-#ifndef QT_NO_CURSOR
-    QApplication::restoreOverrideCursor();
-#endif
-    file.close();
-    saveFile(rdFile());
-    serialTimeOut->start(500);
-}
-#endif
-
-void MainWindow::loadTemp()
-{
-    QFile file(tFile());
-    QTextStream load(&file);
-#ifndef QT_NO_CURSOR
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-#endif
-    console->setPlainText("");
-    file.open(QFile::ReadOnly | QFile::Text);
-    QTextStream ReadFile(&file);
-    console->setPlainText(load.readAll());
-#ifndef QT_NO_CURSOR
-    QApplication::restoreOverrideCursor();
-#endif
-    file.close();
-    ui->actionMoisture->setEnabled(true);
-}
+/*
+ * Open file dialog to load data from hard disk
+ */
 
 void MainWindow::openFile()
 {
@@ -495,6 +549,11 @@ void MainWindow::openFile()
     ui->actionPlot->setEnabled(true);
 }
 
+/*
+ * after serial port is found open it to
+ * receive data
+ */
+
 void MainWindow::openSerialPort()
 {
     serial->setBaudRate(9600);
@@ -504,7 +563,7 @@ void MainWindow::openSerialPort()
     serial->setFlowControl(QSerialPort::NoFlowControl);
     if (serial->open(QIODevice::ReadOnly)) {
             console->setEnabled(true);
-            console->setLocalEchoEnabled( true);
+//            console->setLocalEchoEnabled( true);
             ui->statusBar->showMessage(tr("Connected"));
     } else {
         QMessageBox::critical(this, tr("Error"), serial->errorString());
@@ -513,11 +572,15 @@ void MainWindow::openSerialPort()
     }
 }
 
+/*
+ * method plots data from menu
+ */
+
 void MainWindow::plotData()
 {
     dlgFinish();
 }
-
+/*
 int MainWindow::posGetPos(QString& data, int line_number, bool begin)
 {
     int posendline = 0;
@@ -537,6 +600,12 @@ int MainWindow::posGetPos(QString& data, int line_number, bool begin)
         return(posendline);
     }
 }
+*/
+
+/*
+ * small function to make sure we have a serial port
+ * before we open it.
+ */
 
 void MainWindow::processSerialPort()
 {
@@ -544,20 +613,31 @@ void MainWindow::processSerialPort()
     if(foundSerialPort){openSerialPort();}
 }
 
+/*
+ * Reads Data from initial temp
+ * file superfluos?
+ */
+
 void MainWindow::readData()
 {
-    QFile file(rdFile());
-    QTextStream out(&file);
+//    QFile file(rdFile());
+//    QTextStream out(&file);
     serialTimeOut->start(500);
     QByteArray data = serial->readAll();
     console->putData(data);
+/*
     if(!file.open(QIODevice::Append)){
         QMessageBox::information(this, "readData", tr("Cannot write rd.txt"));
     }else{
         out<<data;
     }
     file.close();
+*/
 }
+
+/*
+ * Saves data in Console to a file
+ */
 
 void MainWindow::save()
 {
@@ -570,6 +650,10 @@ void MainWindow::save()
         saveAs();
     }
 }
+
+/*
+ * Save As asks for filename
+ */
 
 bool MainWindow::saveAs()
 {
@@ -585,6 +669,10 @@ bool MainWindow::saveAs()
     saveFileName = files.at(0);
     return saveFile(files.at(0));
 }
+
+/*
+ * Streams data from Console to file
+ */
 
 bool MainWindow::saveFile(const QString &fileName)
 {
@@ -608,6 +696,10 @@ bool MainWindow::saveFile(const QString &fileName)
     return true;
 }
 
+/*
+ * Shows splash screen for certain period of time
+ */
+
 void MainWindow::showSplash()
 {
     const int five_sec = 5000;
@@ -618,29 +710,4 @@ void MainWindow::showSplash()
 
     QTimer* splash_timer = new QTimer(this);
     splash_timer->singleShot(five_sec, this, SLOT(processSerialPort()));
-}
-/*
-void MainWindow::updateConsole(QString line, int line_number)
-{
-    QString consoledata = console->toPlainText();
-    int posbegin = posGetPos(consoledata, line_number, true);
-    int posend = posGetPos(consoledata, line_number, false);
-    consoledata = consoledata.remove(posbegin+1, posend-posbegin);
-    int datasize = consoledata.size();
-    if(line_number > 1){//first line doens't have new line character
-        if(posend >= datasize){//neither does last line
-            consoledata=consoledata+line;
-        }else{
-        consoledata.insert(posbegin+1,line + '\n');
-        }
-    }else{
-        consoledata.insert(posbegin,line + '\n');
-    }
-    console->setPlainText("");
-    console->setPlainText(consoledata);
-}
-*/
-void MainWindow::writeData(const QByteArray &data)
-{
-    serial->write(data);
 }

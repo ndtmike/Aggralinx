@@ -12,7 +12,16 @@
 ** Email: mike@ndtjames.com
 ** -------------------------------------------------------------------------*/
 
+/*
+ * Window always stays at the back in Linux, check same in Windows?
+*/
+
 #include "dataplot.h"
+
+/*
+ * Blind Constructor with no datapoints
+ * Mostly Sets Parameters
+*/
 
 DataPlot::DataPlot( QWidget* )
 {
@@ -24,6 +33,9 @@ DataPlot::DataPlot( QWidget* )
 
     plotDataPoints<< QPointF (0.0,0.0);
 }
+/*
+ *Destructor makes sure everything is deleted
+*/
 
 DataPlot::~DataPlot()
 {
@@ -31,6 +43,10 @@ DataPlot::~DataPlot()
     delete Curve;
     delete Grid;
 }
+
+/*
+ * creates the new classes (allocates memory)
+*/
 
 void DataPlot::createClasses()
 {
@@ -47,11 +63,14 @@ void DataPlot::createClasses()
                             QSize( 8, 8 ));
 }
 
+/*
+*loads the datapoint vector with data
+*/
+
 void DataPlot::createPoints(const QString& rawdata)
 {
     QString working = rawdata;
     QString line = "";
-    qDebug()<< rawdata;
     QStringList datalines = rawdata.split("\n", QString::SkipEmptyParts);
 
     plotDataPoints.clear();
@@ -62,6 +81,10 @@ void DataPlot::createPoints(const QString& rawdata)
 
     displayGraph(plotDataPoints);
 }
+
+/*
+ * Draws the linear regression line
+ */
 
 void DataPlot::createRegLine(const QVector<QPointF>& in)
 {
@@ -80,7 +103,7 @@ void DataPlot::createRegLine(const QVector<QPointF>& in)
                             + analysis->offset());
     rCurve->setSamples( regLineData );
     rCurve->attach( this );
-
+/* Text output of lines parameters */
     QString p = QString("Correlation Line:") + '\n' +
                 QString("Gain: ") + QString::number(analysis->slope(),'f', 4.4) + '\n' +
                 QString("Offset: ") + QString::number(analysis->offset(),'f', 4.3)+ '\n' +
@@ -90,6 +113,11 @@ void DataPlot::createRegLine(const QVector<QPointF>& in)
     rCurve->setLegendAttribute(QwtPlotCurve::LegendShowSymbol, false);
     delete analysis;
 }
+
+/*
+ * Shows the graph
+ * Sets some parameters that are data dependant
+*/
 
 void DataPlot::displayGraph(const QVector<QPointF>& points)
 {
@@ -103,8 +131,13 @@ void DataPlot::displayGraph(const QVector<QPointF>& points)
     resize( 1200, 800 );
     replot();
     show();
+    setFocus();
+    raise();
 }
 
+/*
+ * set parameters for regression parameter text
+*/
 void DataPlot::displayRegParameters(const QString &in){
 
     QwtPlotTextLabel* text_label = new QwtPlotTextLabel;
@@ -119,7 +152,9 @@ void DataPlot::displayRegParameters(const QString &in){
     text_label->attach( this );
     text_label->show();
 }
-
+/*
+ * loads datapoints from string
+*/
 bool DataPlot::loadPlotDataPoints(const QString& line)
 {
     bool success = false;
@@ -145,12 +180,12 @@ bool DataPlot::loadPlotDataPoints(const QString& line)
             tr("Data Not Entered!"));
     }
 
-    qDebug()<< dr << dm;
-
     plotDataPoints << QPointF(dr,dm);
     return(success);
 }
-
+/*
+ * a constructor function to set general chart parameters
+ * */
 void DataPlot::SetPlotParameters()
 {
     setTitle(tr("Aggralinx Regression"));
@@ -160,7 +195,9 @@ void DataPlot::SetPlotParameters()
     insertLegend( new QwtLegend() );
 
 }
-
+/*
+ * a constructor function to set general curve parameters
+ */
 void DataPlot::SetCurveParameters()
 {
     Curve->setTitle( "Data Points" );
@@ -169,17 +206,28 @@ void DataPlot::SetCurveParameters()
     Curve->setSymbol( Symbol );
 }
 
+/*
+ * a constructor function to set general grid parameters
+ */
+
 void DataPlot::SetGridParameters()
 {
     Grid->attach(this);
 }
+
+/*
+ * a constructor function to set general regression
+ * parameters
+ */
 
 void DataPlot::SetRCurveParameters()
 {
     rCurve->setStyle(QwtPlotCurve::Lines);
     rCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
 }
-
+/*
+ * to set scale of chart
+ */
 
 qreal DataPlot::maxY(const QVector<QPointF> &in)
 {
@@ -193,6 +241,10 @@ qreal DataPlot::maxY(const QVector<QPointF> &in)
     }
     return(rvalue);
 }
+
+/*
+ * to set scale of chart
+ */
 
 qreal DataPlot::maxX(const QVector<QPointF> &in)
 {
