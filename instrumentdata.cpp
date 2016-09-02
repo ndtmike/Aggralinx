@@ -31,9 +31,6 @@ InstrumentData::InstrumentData(const QString& dataIn)
 {
 
     rawInput = dataIn;
-
-    qDebug()<< dataIn;
-
     QTextStream textin(&rawInput);
     QString word;
 
@@ -54,6 +51,7 @@ InstrumentData::InstrumentData(const QString& dataIn)
 /*
  * Destructor
  */
+
 InstrumentData::~InstrumentData()
 {
 
@@ -62,6 +60,7 @@ InstrumentData::~InstrumentData()
 /*
  * Removes bad characters
  */
+
 QString InstrumentData::cleanWord(QString data)
 {
     QString out;
@@ -111,19 +110,49 @@ QString InstrumentData::rawDate()
 
 QString InstrumentData::rawMaterial()
 {
-      return Words[3];
+      QString r;
+      foreach (QString v, Words) {
+         if(v == QString("Direct")|| //cases uploaded by unit
+            v == QString("Sand")||
+            v == QString("Gravel")||
+            v == QString("Cr.")||
+            v == QObject::tr("Direct")|| //cases translated from file
+            v == QObject::tr("Sand")||
+            v == QObject::tr("Gravel")||
+            v == QObject::tr("Cr.")){
+             r = v;
+             break;
+         }
+      }
+      return r;
 }
 
 /*
  * method to get raw percentage string
+ *
+ * returns "no percentage" if no percentage string
  */
 
 QString InstrumentData::rawPercentage()
 {
-    QString out;
-    if(TestMaterial == Direct && Words.size() == 5)
-        out = Words[5];
-    return out;
+    bool ok = false;
+    bool second = false;
+    QString r = QString("no percentage");
+
+    foreach(QString v, Words){
+        v.toDouble( &ok );
+        if(ok == true && second == true ){//found second valid double
+            r = v;
+            break;
+        }
+        if(ok == true && second == false){//found the first valid double
+            second = true;
+        }
+    }
+
+    if(ok == false) r = QObject::tr("error");
+
+    return(r);
 }
 
 /*
@@ -132,7 +161,18 @@ QString InstrumentData::rawPercentage()
 
 QString InstrumentData::rawReading()
 {
-    return Words[2];
+    bool ok = false;
+    QString r;
+
+    foreach(QString v, Words){
+        v.toDouble( &ok );
+        if(ok == true){
+            r = v;
+            break; //found the first valid double
+        }
+    }
+
+    return(r);
 }
 
 /*
@@ -153,17 +193,17 @@ double InstrumentData::percentageToDouble()
     double r;
     QString s;
 
-    if(Words.size() == 6){
-        s = Words[5];
-    }else {
-        s = "-1.0";
-    }
+    s = rawPercentage();
 
-    QTextStream ss(&s);
-    ss>>r;
-    if( ss.status() != QTextStream::Ok){
-        r=0.0;
-        QMessageBox::information(NULL,"Percentage","Bad Reading Data");
+    if( s == QString("no percentage")){
+        r=-1.0;
+    }else{
+        QTextStream ss(&s);
+        ss>>r;
+        if( ss.status() != QTextStream::Ok){
+            r=0.0;
+            QMessageBox::information(NULL,"Percentage","Bad Reading Data");
+        }
     }
 
     return r;
@@ -176,7 +216,7 @@ double InstrumentData::percentageToDouble()
 double InstrumentData::readingToDouble()
 {
     double r;
-    QString s = Words[4];
+    QString s = rawReading();
     QTextStream ss(&s);
 
     ss>>r;
@@ -197,10 +237,18 @@ InstrumentData::Material InstrumentData::toMaterial()
 {
     Material material = Bad_Data;
 
-    if(rawMaterial() == "Sand") material = Sand;
-    if(rawMaterial() == "Gravel") material = Gravel;
-    if(rawMaterial() == "Cr.") material = Crushed_Stone;
-    if(rawMaterial() == "Direct") material = Direct;
+    QString materialstring = rawMaterial();
+
+//    checking both local saved version and uploaded from unit
+
+    if(materialstring == "Sand"||
+       materialstring == QObject::tr("Sand")) material = Sand;
+    if(materialstring == "Gravel"||
+       materialstring == QObject::tr("Gravel")) material = Gravel;
+    if(materialstring == "Cr." ||
+       materialstring == QObject::tr("Cr.")) material = Crushed_Stone;
+    if(materialstring == "Direct" ||
+       materialstring == QObject::tr("Direct")) material = Direct;
 
     return(material);
 }

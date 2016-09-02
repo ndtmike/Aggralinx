@@ -22,6 +22,7 @@
 #include <QDialog>
 #include <QIODevice>
 #include <QMessageBox>
+#include <QObject>
 #include <QString>
 #include <QTextStream>
 #include <QTime>

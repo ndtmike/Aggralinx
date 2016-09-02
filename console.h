@@ -63,7 +63,7 @@ signals:
 public:
     explicit Console(QWidget *parent = 0);
     void putData(const QByteArray &data);
-    void setLocalEchoEnabled(bool set);
+//    void setLocalEchoEnabled(bool set);
 
 protected:
     virtual void contextMenuEvent(QContextMenuEvent *e);

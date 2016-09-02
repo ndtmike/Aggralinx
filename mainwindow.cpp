@@ -55,6 +55,8 @@
  *      dialog to enter moisture data
  *      timer to show splash screen
  *      window to show data that's plotted
+ *
+ *  - issue with plot not being raised and not getting focus
  */
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -62,17 +64,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    plot = new DataPlot(this);
     console = new Console;
     setCentralWidget(console);
     serial = new QSerialPort(this);
     moistureData = new MoistureDialog(this);
     serialTimeOut = new QTimer(this);
-    plot = new DataPlot(this);
 
     saveFileName = "";
     initActionsConnections();
     QTimer* init_timer = new QTimer(this);
     init_timer->singleShot(100, this, SLOT(showSplash()));
+    delete init_timer;
 }
 
 /*
@@ -81,7 +84,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    closeSerialPort();
     delete plot;
     delete ui;
     delete console;
@@ -202,7 +204,7 @@ QString MainWindow::createDataLine(QVector<InstrumentData>::Iterator i){
     reading = i->isMaterialDirect()? reading : reading.append( QString('%'));
 
     QString percent;
-    percent = i->getPercent() == -1.0 ? "": QString("%L1").arg(i->getPercent(),0,'f',1) + '%';
+    percent = i->getPercent() == -1.0 ? "": QString("%L1").arg(i->getPercent(),0,'f',1) +' '+ '%';
 
     display<<idt.toString(Qt::DefaultLocaleShortDate)<<' '
            <<matstr<<' '
@@ -359,6 +361,7 @@ void MainWindow::dlgEnter()
 void MainWindow::dlgFinish()
 {
     plot->createPoints( console->toPlainText() );
+    plot->show();
 }
 
 /*
@@ -446,6 +449,7 @@ void MainWindow::endUpload()
     QString data;
 
     serialTimeOut->stop();
+    delete serialTimeOut;
     QMessageBox::information(this, "endUpload", tr("Upload Complete"));
 #ifndef QT_NO_CURSOR
     QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -508,10 +512,12 @@ void MainWindow::initActionsConnections()
 
 void MainWindow::loadData(QString Data)
 {
+    serial->close();
+
     QStringList datalines = Data.split( "\n", QString::SkipEmptyParts );
     foreach( QString line, datalines ) {
-       InstrumentData newinstdata(line);
-       InstDataVector.append(newinstdata);
+        InstrumentData newinstdata(line);
+        InstDataVector.append(newinstdata);
     }
 }
 
@@ -535,12 +541,12 @@ void MainWindow::openFile()
     QApplication::setOverrideCursor(Qt::WaitCursor);
 #endif
     data = load.readAll();
-    loadData(data);  //loads InstDataVector
-    displayInstData();
 #ifndef QT_NO_CURSOR
     QApplication::restoreOverrideCursor();
 #endif
     file.close();
+    loadData(data);  //loads InstDataVector
+    displayInstData();
 
     ui->actionMoisture->setEnabled(true);
     ui->action_Save->setEnabled(true);
@@ -710,4 +716,5 @@ void MainWindow::showSplash()
 
     QTimer* splash_timer = new QTimer(this);
     splash_timer->singleShot(five_sec, this, SLOT(processSerialPort()));
+    delete splash_timer;
 }

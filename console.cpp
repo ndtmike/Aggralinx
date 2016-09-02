@@ -52,7 +52,7 @@
 
 Console::Console(QWidget *parent)
     : QPlainTextEdit(parent)
-    , localEchoEnabled(false)
+//    , localEchoEnabled(false)
 {
     QPalette p = palette();
     p.setColor(QPalette::Base, Qt::black);
@@ -74,11 +74,12 @@ void Console::putData(const QByteArray &data)
 /* Not entirely sure what this is for
  * Maybe an artifact from modified code
  * */
-
+/*
 void Console::setLocalEchoEnabled(bool set)
 {
     localEchoEnabled = set;
 }
+*/
 /*
 void Console::keyPressEvent(QKeyEvent *e)
 {
@@ -102,7 +103,7 @@ void Console::keyPressEvent(QKeyEvent *e)
 void Console::mousePressEvent(QMouseEvent *e)
 {
     Q_UNUSED(e)
-    setFocus();
+//    setFocus();
 }
 
 /*not really sure why these are here and need to look up Q_UNUSED*/

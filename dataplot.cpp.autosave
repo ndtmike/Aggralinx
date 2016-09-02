@@ -155,23 +155,18 @@ void DataPlot::displayRegParameters(const QString &in){
 */
 bool DataPlot::loadPlotDataPoints(const QString& line)
 {
-    qDebug()<<line;
     bool success = false, ok = false, second = false;
     double dr = 0.0;
     double dm = 0.0;
     QString buffer;
-
     QStringList list = line.split(" ");
 
     foreach(buffer, list){
         buffer.toDouble( &ok );
         if(ok == true && second == true ){//found second valid double
-            qDebug()<<"buffer before: "<<buffer;
             QTextStream bufferstream(& buffer);
             bufferstream >> dm;
             success = true;
-            qDebug()<<"buffer: "<< buffer << "dm: "<< dm << "dr: "<< dr
-                    <<"ok: "<< ok <<"second: "<< second << "success: "<< success;
             break;
         }
         if(ok == true && second == false){//found the first valid double
@@ -190,7 +185,6 @@ bool DataPlot::loadPlotDataPoints(const QString& line)
         QMessageBox::information(this,"Aggralinx",tr("Data Not Entered"));
     }
 
-    qDebug()<<"dr: "<< dr <<"dm: "<< dm;
     plotDataPoints << QPointF(dr,dm);
     return(success);
 }

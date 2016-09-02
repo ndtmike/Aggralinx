@@ -10,7 +10,6 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     console.cpp \
-#    parser.cpp \
     splash.cpp \
     dataplot.cpp \
     moisturedialog.cpp \
