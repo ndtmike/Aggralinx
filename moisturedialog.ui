@@ -109,7 +109,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>&amp;Finsh</string>
+    <string>&amp;Finish</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btnBackward">

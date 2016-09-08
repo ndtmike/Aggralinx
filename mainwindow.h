@@ -103,6 +103,7 @@ public:
 
 protected:
     void closeEvent(QCloseEvent */*event*/) Q_DECL_OVERRIDE;
+    void changeEvent(QEvent *);
 
 private slots:
     void about();
@@ -120,6 +121,10 @@ private slots:
     void handleError(QSerialPort::SerialPortError error);
     void help();
 
+    void LNGEnglish();
+    void LNGDeutsche();
+    void LNGEspanol();
+
     void openFile();
     void openSerialPort();
     void plotData();
@@ -133,6 +138,7 @@ private slots:
 private:
 
     bool checkSerialPort();
+    QLocale* CurrentLocale;
     QString createDataLine(QVector<InstrumentData>::Iterator i); //reads data form InstDataVector and returns local string
     void displayInstData(); //display text from InstDataVector
     void dlgUpdate();
@@ -140,9 +146,11 @@ private:
     void initActionsConnections();
     QVector <InstrumentData> InstDataVector; //loaded with each line uploaded for localization purposes
     QVector <InstrumentData> ::iterator dlgInstDataVectorIterator;
+    void LNGLoadTranslator();  //after QLocale is chnaged string need to be loaded
     void loadData(QString Data);
     int posGetPos(QString& data, int line_number, bool begin);
     bool saveFile(const QString &fileName);
+    QTranslator* Translator;
     void updateConsole(QString line, int line_number);
 
     Console *console;

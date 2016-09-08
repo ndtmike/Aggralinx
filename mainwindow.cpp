@@ -70,6 +70,8 @@ MainWindow::MainWindow(QWidget *parent) :
     serial = new QSerialPort(this);
     moistureData = new MoistureDialog(this);
     serialTimeOut = new QTimer(this);
+    CurrentLocale = new QLocale(QLocale::system());
+    Translator = new QTranslator(this);
 
     saveFileName = "";
     initActionsConnections();
@@ -231,6 +233,20 @@ void MainWindow::copy()
 void MainWindow::closeEvent (QCloseEvent* /*event*/)
 {
     plot->close();
+}
+
+/*
+ * changes text of Menu System
+*/
+
+void MainWindow::changeEvent(QEvent *e)
+{
+    if(e->type() == QEvent::LanguageChange){
+        ui->retranslateUi(this);
+        qDebug()<<"Language Change";
+    }else{
+        QMainWindow::changeEvent(e);
+    }
 }
 
 /*
@@ -434,6 +450,9 @@ void MainWindow::help()
     help->start("hh.exe Aggralinx.chm");
 }
 
+
+
+
 /*
  * After all data is uploaded and timer times out
  * this function gets called
@@ -493,6 +512,9 @@ void MainWindow::initActionsConnections()
     connect(ui->actionPlot, SIGNAL(triggered()), this, SLOT(plotData()));
     connect(ui->action_Save, SIGNAL(triggered()), this, SLOT(save()));
     connect(ui->action_Open, SIGNAL(triggered()), this, SLOT(openFile()));
+    connect(ui->actionEnglish, SIGNAL(triggered()), this, SLOT(LNGEnglish()));
+    connect(ui->actionDeutsche, SIGNAL(triggered()), this, SLOT(LNGDeutsche()));
+    connect(ui->actionEspanol, SIGNAL(triggered()), this, SLOT(LNGEspanol()));
 
     connect(moistureData, SIGNAL(btnBackClick()), this, SLOT(dlgBack()));
     connect(moistureData, SIGNAL(btnEnterClick()), this, SLOT(dlgEnter()));
@@ -502,8 +524,53 @@ void MainWindow::initActionsConnections()
     connect(serial, SIGNAL(error(QSerialPort::SerialPortError)), this,
             SLOT(handleError(QSerialPort::SerialPortError)));
     connect(serial, SIGNAL(readyRead()), this, SLOT(readData()));
-//    connect(console, SIGNAL(getData(QByteArray)), this, SLOT(writeData(QByteArray)));
     connect(serialTimeOut,SIGNAL(timeout()), this,SLOT(endUpload()));
+}
+
+
+/*
+ * sets translator object to German
+ */
+void MainWindow::LNGDeutsche()
+{
+    delete CurrentLocale;
+    CurrentLocale = new QLocale(QLocale::German);
+    LNGLoadTranslator();
+}
+
+/*
+ * sets translator object to English
+ */
+void MainWindow::LNGEnglish()
+{
+    delete CurrentLocale;
+    CurrentLocale = new QLocale(QLocale::English);
+    LNGLoadTranslator();
+}
+
+/*
+ * sets translator object to Spanish
+ */
+void MainWindow::LNGEspanol()
+{
+    delete CurrentLocale;
+    CurrentLocale = new QLocale(QLocale::Spanish);
+    LNGLoadTranslator();
+}
+
+/*
+ *loads translator  object
+*/
+void MainWindow::LNGLoadTranslator()
+{
+    if(Translator->isEmpty()){
+            Translator->load(CurrentLocale->language(), "Internationalization","_");
+            qApp->installTranslator(Translator);
+    }else{
+        qApp->removeTranslator(Translator);
+        Translator->load(CurrentLocale->language(), "Internationalization","_");
+        qApp->installTranslator(Translator);
+    }
 }
 
 /*

@@ -59,6 +59,15 @@
     <property name="title">
      <string>&amp;Tools</string>
     </property>
+    <widget class="QMenu" name="menu_Language">
+     <property name="title">
+      <string>&amp;Language</string>
+     </property>
+     <addaction name="actionEnglish"/>
+     <addaction name="actionDeutsche"/>
+     <addaction name="actionEspanol"/>
+    </widget>
+    <addaction name="menu_Language"/>
     <addaction name="actionMoisture"/>
     <addaction name="actionPlot"/>
    </widget>
@@ -167,6 +176,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionEnglish">
+   <property name="text">
+    <string>&amp;English</string>
+   </property>
+  </action>
+  <action name="actionDeutsche">
+   <property name="text">
+    <string>&amp;Deutsche</string>
+   </property>
+  </action>
+  <action name="actionEspanol">
+   <property name="text">
+    <string>E&amp;spanol</string>
    </property>
   </action>
  </widget>
