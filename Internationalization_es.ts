@@ -161,7 +161,7 @@ Datos Sin Mención</translation>
     <message>
         <location filename="mainwindow.cpp" line="105"/>
         <source>The &lt;b&gt;Aggralinx Software&lt;/b&gt; Version 3.1 is used with the &lt;br&gt;</source>
-        <translation type="unfinished">E &lt;b&gt;Aggralinx Software&lt;/b&gt; Version 3.1 se utiliza con el &lt;br&gt;</translation>
+        <translation>El &lt;b&gt;Aggralinx Software&lt;/b&gt; Version 3.1 se utiliza con el &lt;br&gt;</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="106"/>
@@ -230,116 +230,116 @@ Comprobar instrumento está enchufado
         <translation>Conectado a</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="188"/>
+        <location filename="mainwindow.cpp" line="180"/>
         <source>Sand</source>
         <translation>Arena</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="191"/>
+        <location filename="mainwindow.cpp" line="183"/>
         <source>Gravel</source>
         <translation>Grava</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="194"/>
+        <location filename="mainwindow.cpp" line="186"/>
         <source>Crushed Stone</source>
         <translation>Piedra</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="197"/>
+        <location filename="mainwindow.cpp" line="189"/>
         <source>Direct</source>
         <translation>Directo</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="200"/>
+        <location filename="mainwindow.cpp" line="193"/>
         <source>Bad Data</source>
         <translation>Datos Incorrectos</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="261"/>
+        <location filename="mainwindow.cpp" line="251"/>
         <source>Disconnected</source>
         <translation>Desconectado</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="355"/>
-        <location filename="mainwindow.cpp" line="360"/>
+        <location filename="mainwindow.cpp" line="334"/>
+        <location filename="mainwindow.cpp" line="339"/>
         <source>Enter</source>
         <translation>Entrar</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="355"/>
+        <location filename="mainwindow.cpp" line="334"/>
         <source>Bad Percent Data</source>
         <translation>Datos de Porcentaje  Mal</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="360"/>
+        <location filename="mainwindow.cpp" line="339"/>
         <source>Percent Data Out of Range</source>
         <translation>Porcentaje de Datos Fuera de Rango</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="419"/>
+        <location filename="mainwindow.cpp" line="398"/>
         <source>Test Date and Time</source>
         <translation>Fecha y Hora de Prueba</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="421"/>
+        <location filename="mainwindow.cpp" line="400"/>
         <source>Reading:</source>
         <translation>Leyendo:</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="438"/>
+        <location filename="mainwindow.cpp" line="417"/>
         <source>Critical Error</source>
         <translation>Error crítico</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="472"/>
+        <location filename="mainwindow.cpp" line="269"/>
         <source>Upload Complete</source>
         <translation>Carga completa</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="600"/>
+        <location filename="mainwindow.cpp" line="540"/>
         <source>Open Text File</source>
-        <translation>Abrir archivo de texto</translation>
+        <translation>Abrir archivo de texto </translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="600"/>
+        <location filename="mainwindow.cpp" line="540"/>
         <source>Text FIles (*.txt)</source>
-        <translation>Los archivos de texto</translation>
+        <translation>archivo de texto (*.txt)</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="640"/>
+        <location filename="mainwindow.cpp" line="579"/>
         <source>Connected</source>
         <translation>Conectado</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="642"/>
+        <location filename="mainwindow.cpp" line="581"/>
         <source>Error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="644"/>
+        <location filename="mainwindow.cpp" line="583"/>
         <source>Open error</source>
         <translation>Error de Apertura</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="719"/>
+        <location filename="mainwindow.cpp" line="626"/>
         <source>File: </source>
         <translation>Archivo:</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="721"/>
+        <location filename="mainwindow.cpp" line="628"/>
         <source>Saved Successfully</source>
-        <translation type="unfinished">Guardado exitosamente</translation>
+        <translation>Guardado exitosamente</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="736"/>
+        <location filename="mainwindow.cpp" line="643"/>
         <source>Text (*.txt)</source>
-        <translation type="unfinished"></translation>
+        <translation>archivo de texto (*.txt)</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="755"/>
+        <location filename="mainwindow.cpp" line="662"/>
         <source>Cannot write file %1:
 %2.</source>
-        <translation type="unfinished">No se puede escribir el archivo %1:
+        <translation>No se puede escribir el archivo %1:
 %2.</translation>
     </message>
 </context>
@@ -391,32 +391,32 @@ Comprobar instrumento está enchufado
     <name>QObject</name>
     <message>
         <location filename="instrumentdata.cpp" line="119"/>
-        <location filename="instrumentdata.cpp" line="251"/>
+        <location filename="instrumentdata.cpp" line="247"/>
         <source>Direct</source>
         <translation>Directo</translation>
     </message>
     <message>
         <location filename="instrumentdata.cpp" line="120"/>
-        <location filename="instrumentdata.cpp" line="245"/>
+        <location filename="instrumentdata.cpp" line="241"/>
         <source>Sand</source>
         <translation>Arena</translation>
     </message>
     <message>
         <location filename="instrumentdata.cpp" line="121"/>
-        <location filename="instrumentdata.cpp" line="247"/>
+        <location filename="instrumentdata.cpp" line="243"/>
         <source>Gravel</source>
         <translation>Grava</translation>
     </message>
     <message>
         <location filename="instrumentdata.cpp" line="122"/>
-        <location filename="instrumentdata.cpp" line="249"/>
+        <location filename="instrumentdata.cpp" line="245"/>
         <source>Cr.</source>
         <translation>Piedra</translation>
     </message>
     <message>
-        <location filename="instrumentdata.cpp" line="153"/>
-        <source>error</source>
-        <translation></translation>
+        <location filename="instrumentdata.cpp" line="140"/>
+        <source>no percentage</source>
+        <translation type="unfinished">no percentage</translation>
     </message>
 </context>
 <context>

@@ -71,33 +71,6 @@ void Console::putData(const QByteArray &data)
     bar->setValue(bar->maximum());
 }
 
-/* Not entirely sure what this is for
- * Maybe an artifact from modified code
- * */
-/*
-void Console::setLocalEchoEnabled(bool set)
-{
-    localEchoEnabled = set;
-}
-*/
-/*
-void Console::keyPressEvent(QKeyEvent *e)
-{
-    switch (e->key()) {
-    case Qt::Key_Backspace:
-    case Qt::Key_Left:
-    case Qt::Key_Right:
-    case Qt::Key_Up:
-    case Qt::Key_Down:
-        break;
-    default:
-        if (localEchoEnabled)
-            QPlainTextEdit::keyPressEvent(e);
-        emit getData(e->text().toLocal8Bit());
-    }
-}
-*/
-
 /*sets Focus when clicked on */
 
 void Console::mousePressEvent(QMouseEvent *e)

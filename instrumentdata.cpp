@@ -137,7 +137,7 @@ QString InstrumentData::rawPercentage()
 {
     bool ok = false;
     bool second = false;
-    QString r = QString("no percentage");
+    QString r = QString(QObject::tr("no percentage"));
 
     foreach(QString v, Words){
         v.toDouble( &ok );
@@ -149,9 +149,6 @@ QString InstrumentData::rawPercentage()
             second = true;
         }
     }
-
-    if(ok == false) r = QObject::tr("error");
-
     return(r);
 }
 
@@ -205,7 +202,6 @@ double InstrumentData::percentageToDouble()
             QMessageBox::information(NULL,"Percentage","Bad Reading Data");
         }
     }
-
     return r;
 }
 

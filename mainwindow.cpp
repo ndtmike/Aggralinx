@@ -158,15 +158,6 @@ bool MainWindow::checkSerialPort()
 }
 
 /*
- * Superfluous?  Needs to be checked?
-*/
-
-void MainWindow::cleanData()
-{
-    ui->actionMoisture->setEnabled(true);
-}
-
-/*
  * after data is loaded it is turned into a vector of
  * InstrumentData objects.
  * Set up as group of numbers that is 'localized'
@@ -177,6 +168,7 @@ QString MainWindow::createDataLine(QVector<InstrumentData>::Iterator i){
 
     QString displaystring;
     QTextStream display(&displaystring);
+    QString percent;
 
     QDateTime idt = i->toQDateTime();
 
@@ -195,6 +187,7 @@ QString MainWindow::createDataLine(QVector<InstrumentData>::Iterator i){
             break;
         case InstrumentData::Direct:
             matstr = tr("Direct");
+            percent = i->getPercent() == -1.0 ? "": QString("%L1").arg(i->getPercent(),0,'f',1) +' '+ '%';
             break;
         case InstrumentData::Bad_Data:
             matstr = tr("Bad Data");
@@ -204,9 +197,6 @@ QString MainWindow::createDataLine(QVector<InstrumentData>::Iterator i){
     QString reading;
     reading = QString("%L1").arg(i->readingToDouble(),0,'f',1);
     reading = i->isMaterialDirect()? reading : reading.append( QString('%'));
-
-    QString percent;
-    percent = i->getPercent() == -1.0 ? "": QString("%L1").arg(i->getPercent(),0,'f',1) +' '+ '%';
 
     display<<idt.toString(Qt::DefaultLocaleShortDate)<<' '
            <<matstr<<' '
@@ -262,6 +252,34 @@ void MainWindow::closeSerialPort()
 }
 
 /*
+ * After all data is uploaded and timer times out
+ * this function gets called
+ * saves data to temp filed
+ * Stops timer (one upload at a time)
+ * loads data in InstrumentData vector
+ * sets parameters that we NOW HAVE DATA
+ */
+
+void MainWindow::endUpload()
+{
+    QString data;
+
+    serialTimeOut->stop();
+    delete serialTimeOut;
+    QMessageBox::information(this, "endUpload", tr("Upload Complete"));
+    data = console->toPlainText();
+    loadData(data);  //loads InstDataVector
+    displayInstData();
+
+    ui->action_Save->setEnabled(true);
+    ui->actionSaveAs->setEnabled(true);
+    ui->action_Open->setEnabled(false);
+    ui->actionMoisture->setEnabled(true);
+    ui->actionPlot->setEnabled(true);
+    ui->actionMoisture->setEnabled(true);
+}
+
+/*
  * outputs InstrumentData vector to console in localized form
  */
 
@@ -275,47 +293,8 @@ void MainWindow::displayInstData()
         displaystring += createDataLine(i);
 
     }
-    console->appendPlainText(displaystring);
-/*
-    displaystring.clear();
-    display<<"German"<<'\n';
-
-    QLocale::setDefault(QLocale(QLocale::German,QLocale::Germany));
-    QLocale german;
-
-    for( auto i = InstDataVector.begin();
-        i != InstDataVector.end(); ++i){
-
-        displaystring += createDataLine(i);
-    }
-    console->appendPlainText(displaystring);
-
-    displaystring.clear();
-    display<<"Spain"<<'\n';
-
-    QLocale::setDefault(QLocale(QLocale::Spanish,QLocale::Spain));
-    QLocale spain;4
-
-    for( auto i = InstDataVector.begin();
-        i != InstDataVector.end(); ++i){
-        displaystring += createDataLine(i);
-    }
-    console->appendPlainText(displaystring);
-
-    displaystring.clear();
-    display<<"Mexico"<<'\n';
-
-    QLocale::setDefault(QLocale(QLocale::Spanish,QLocale::Mexico));
-    QLocale mexico;
-
-    for( auto i = InstDataVector.begin();
-        i != InstDataVector.end(); ++i){
-        displaystring += createDataLine(i);
-    }
-    console->appendPlainText(displaystring);
-
-    QLocale::setDefault(QLocale::system());
-*/
+    console->setPlainText(""); //erase uploaded data
+    console->setPlainText(displaystring); //replace with formatted data
 }
 
 /*
@@ -451,45 +430,6 @@ void MainWindow::help()
 }
 
 
-
-
-/*
- * After all data is uploaded and timer times out
- * this function gets called
- * saves data to temp filed
- * Stops timer (one upload at a time)
- * loads data in InstrumentData vector
- * sets parameters that we NOW HAVE DATA
- */
-void MainWindow::endUpload()
-{
-    const QString outputfile = tFile();
-    QFile file(outputfile);
-    QString data;
-
-    serialTimeOut->stop();
-    delete serialTimeOut;
-    QMessageBox::information(this, "endUpload", tr("Upload Complete"));
-#ifndef QT_NO_CURSOR
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-#endif
-    cleanData();
-    file.open(QFile::ReadOnly | QFile::Text);
-    QTextStream ReadFile(&file);
-    data = ReadFile.readAll();
-    loadData(data);  //loads InstDataVector
-    displayInstData();
-#ifndef QT_NO_CURSOR
-    QApplication::restoreOverrideCursor();
-#endif
-    file.close();
-    ui->action_Save->setEnabled(true);
-    ui->actionSaveAs->setEnabled(true);
-    ui->action_Open->setEnabled(false);
-    ui->actionMoisture->setEnabled(true);
-    ui->actionPlot->setEnabled(true);
-}
-
 /*
  * creates actions and connections for program flow
  */
@@ -603,7 +543,6 @@ void MainWindow::openFile()
     QFile file(saveFileName);
     file.open(QFile::ReadOnly | QFile::Text);
     QTextStream load(&file);
-
 #ifndef QT_NO_CURSOR
     QApplication::setOverrideCursor(Qt::WaitCursor);
 #endif
@@ -620,6 +559,7 @@ void MainWindow::openFile()
     ui->actionSaveAs->setEnabled(true);
     ui->action_Open->setEnabled(false);
     ui->actionPlot->setEnabled(true);
+    ui->actionMoisture->setEnabled(true);
 }
 
 /*
@@ -636,7 +576,6 @@ void MainWindow::openSerialPort()
     serial->setFlowControl(QSerialPort::NoFlowControl);
     if (serial->open(QIODevice::ReadOnly)) {
             console->setEnabled(true);
-//            console->setLocalEchoEnabled( true);
             ui->statusBar->showMessage(tr("Connected"));
     } else {
         QMessageBox::critical(this, tr("Error"), serial->errorString());
@@ -653,27 +592,6 @@ void MainWindow::plotData()
 {
     dlgFinish();
 }
-/*
-int MainWindow::posGetPos(QString& data, int line_number, bool begin)
-{
-    int posendline = 0;
-    int posbeginline=0;
-    QString working = data;
-
-    for(int i = 0; i < line_number; ++i){
-        posbeginline = posendline;
-        posendline = working.indexOf('\n',posendline +1);//end of line
-        if (posendline == -1){
-            posendline = working.size();  //end of file
-        }
-    }
-    if(begin == true){
-        return(posbeginline);
-    }else{
-        return(posendline);
-    }
-}
-*/
 
 /*
  * small function to make sure we have a serial port
@@ -687,25 +605,14 @@ void MainWindow::processSerialPort()
 }
 
 /*
- * Reads Data from initial temp
- * file superfluos?
+ * Reads Data from serial port
  */
 
 void MainWindow::readData()
 {
-//    QFile file(rdFile());
-//    QTextStream out(&file);
     serialTimeOut->start(500);
     QByteArray data = serial->readAll();
     console->putData(data);
-/*
-    if(!file.open(QIODevice::Append)){
-        QMessageBox::information(this, "readData", tr("Cannot write rd.txt"));
-    }else{
-        out<<data;
-    }
-    file.close();
-*/
 }
 
 /*

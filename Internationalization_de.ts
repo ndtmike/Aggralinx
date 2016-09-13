@@ -231,114 +231,114 @@ oder serielle Schnittstelle ordnungsgemäß installiert
         <translation>Angeschlossen</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="188"/>
+        <location filename="mainwindow.cpp" line="180"/>
         <source>Sand</source>
         <translation>
 Sand</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="191"/>
+        <location filename="mainwindow.cpp" line="183"/>
         <source>Gravel</source>
         <translation>Schotter</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="194"/>
+        <location filename="mainwindow.cpp" line="186"/>
         <source>Crushed Stone</source>
         <translation>Geröll</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="197"/>
+        <location filename="mainwindow.cpp" line="189"/>
         <source>Direct</source>
         <translation>Direkt</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="200"/>
+        <location filename="mainwindow.cpp" line="193"/>
         <source>Bad Data</source>
         <translation>Bad Daten</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="261"/>
+        <location filename="mainwindow.cpp" line="251"/>
         <source>Disconnected</source>
         <translation>getrennt</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="355"/>
-        <location filename="mainwindow.cpp" line="360"/>
+        <location filename="mainwindow.cpp" line="334"/>
+        <location filename="mainwindow.cpp" line="339"/>
         <source>Enter</source>
         <translation>Eingeben</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="355"/>
+        <location filename="mainwindow.cpp" line="334"/>
         <source>Bad Percent Data</source>
         <translation>Bad Prozent Daten</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="360"/>
+        <location filename="mainwindow.cpp" line="339"/>
         <source>Percent Data Out of Range</source>
         <translation>Prozent Daten Aus des Range</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="419"/>
+        <location filename="mainwindow.cpp" line="398"/>
         <source>Test Date and Time</source>
         <translation>Test-Datum und Uhrzeit</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="421"/>
+        <location filename="mainwindow.cpp" line="400"/>
         <source>Reading:</source>
         <translation>Instrument Lesung:</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="438"/>
+        <location filename="mainwindow.cpp" line="417"/>
         <source>Critical Error</source>
         <translation>Kritischer Fehler</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="472"/>
+        <location filename="mainwindow.cpp" line="269"/>
         <source>Upload Complete</source>
         <translation>Hochladen abgeschlossen</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="600"/>
+        <location filename="mainwindow.cpp" line="540"/>
         <source>Open Text File</source>
         <translation>Textdatei öffnen</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="600"/>
+        <location filename="mainwindow.cpp" line="540"/>
         <source>Text FIles (*.txt)</source>
-        <translation>Textdateien </translation>
+        <translation>Textdateien (*.txt)</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="640"/>
+        <location filename="mainwindow.cpp" line="579"/>
         <source>Connected</source>
         <translation>Verbindung</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="642"/>
+        <location filename="mainwindow.cpp" line="581"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="644"/>
+        <location filename="mainwindow.cpp" line="583"/>
         <source>Open error</source>
         <translation>Öffnen Sie Fehler</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="719"/>
+        <location filename="mainwindow.cpp" line="626"/>
         <source>File: </source>
         <translation>Datei:</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="721"/>
+        <location filename="mainwindow.cpp" line="628"/>
         <source>Saved Successfully</source>
         <translation>Erfolgreich gespeichert</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="736"/>
+        <location filename="mainwindow.cpp" line="643"/>
         <source>Text (*.txt)</source>
-        <translation></translation>
+        <translation>Textdateien (*.txt)</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="755"/>
+        <location filename="mainwindow.cpp" line="662"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Die Datei kann nicht% 1 schreiben:
@@ -393,32 +393,36 @@ Sand</translation>
     <name>QObject</name>
     <message>
         <location filename="instrumentdata.cpp" line="119"/>
-        <location filename="instrumentdata.cpp" line="251"/>
+        <location filename="instrumentdata.cpp" line="247"/>
         <source>Direct</source>
         <translation>Direkt</translation>
     </message>
     <message>
         <location filename="instrumentdata.cpp" line="120"/>
-        <location filename="instrumentdata.cpp" line="245"/>
+        <location filename="instrumentdata.cpp" line="241"/>
         <source>Sand</source>
         <translation>Sand</translation>
     </message>
     <message>
         <location filename="instrumentdata.cpp" line="121"/>
-        <location filename="instrumentdata.cpp" line="247"/>
+        <location filename="instrumentdata.cpp" line="243"/>
         <source>Gravel</source>
         <translation>Schotter</translation>
     </message>
     <message>
         <location filename="instrumentdata.cpp" line="122"/>
-        <location filename="instrumentdata.cpp" line="249"/>
+        <location filename="instrumentdata.cpp" line="245"/>
         <source>Cr.</source>
         <translation>Geröll</translation>
     </message>
     <message>
-        <location filename="instrumentdata.cpp" line="153"/>
+        <location filename="instrumentdata.cpp" line="140"/>
+        <source>no percentage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>error</source>
-        <translation>Fehler</translation>
+        <translation type="vanished">Fehler</translation>
     </message>
 </context>
 <context>

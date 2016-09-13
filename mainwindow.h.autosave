@@ -134,7 +134,6 @@ private slots:
     bool saveAs();
     void showSplash();
 
-
 private:
 
     bool checkSerialPort();
