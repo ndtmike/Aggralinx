@@ -21,6 +21,7 @@
 #include <QDebug>
 #include <QDialog>
 #include <QIODevice>
+#include <QLocale>
 #include <QMessageBox>
 #include <QObject>
 #include <QString>
@@ -35,6 +36,7 @@ public:
 
     InstrumentData();
     InstrumentData(const QString& dataIn);
+    InstrumentData(const QString& dataIn, QLocale locale);
     ~InstrumentData();
 //These need to be rethought but for now ok
     bool isMaterialDirect();
@@ -48,6 +50,7 @@ public:
 
 private:
 
+    QLocale CurrentLocale;
     QDate TestDate;
     QDateTime TestDateTime;
     Material TestMaterial;

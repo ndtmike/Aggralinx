@@ -49,6 +49,35 @@ InstrumentData::InstrumentData(const QString& dataIn)
 }
 
 /*
+ * parses and constructs the object with a string input
+ * is there a problem after Localization?  Needs testing
+ * Added QLocale to constructor
+ */
+
+InstrumentData::InstrumentData(const QString& dataIn, QLocale locale)
+{
+
+    rawInput = dataIn;
+    QTextStream textin(&rawInput);
+    QString word;
+
+    while( textin.status() == QTextStream::Ok) {
+            textin >> word;
+            word = cleanWord(word);
+            if(word != "" && word != "Stone") Words.push_back(word); //special case stuff
+    }
+
+    TestDate = toQDate();
+    TestTime = toQTime();
+    TestDateTime = toQDateTime();
+    TestMaterial = toMaterial();
+    TestReading = readingToDouble();
+    TestPercentage = percentageToDouble();
+
+    CurrentLocale = locale;
+}
+
+/*
  * Destructor
  */
 
@@ -266,7 +295,10 @@ QDate InstrumentData::toQDate()
     output = QDate::fromString( buffer,"MM'/'dd'/'yy");
     output = output.year() < 2016 ? output.addYears(100):output; //stops date being 1900's
 
-    output = (output.isValid() == true)? output : bad; //returns all 1's if bad data in
+    if(output.isValid() == false){//not from an upload
+        output = QDate::fromString( buffer, CurrentLocale.dateFormat( QLocale::ShortFormat));
+        output = (output.isValid() == true)? output : bad; //returns all 1's if bad data in final check
+    }
 
     return(output);
 }
@@ -295,8 +327,10 @@ QTime InstrumentData::toQTime()
     QString buffer = rawTime();
     output = QTime::fromString(buffer, "hh':'mm");
 
-    output = (output.isValid() == true)? output : bad; //returns zero if bad data
-
+    if(output.isValid() == false){//not from an upload
+        output = QTime::fromString( buffer, CurrentLocale.timeFormat(QLocale::ShortFormat));
+        output = (output.isValid() == true)? output : bad; //returns all 1's if bad data in final check
+    }
     return(output);
 }
 

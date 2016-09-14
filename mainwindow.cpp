@@ -198,12 +198,30 @@ QString MainWindow::createDataLine(QVector<InstrumentData>::Iterator i){
     reading = QString("%L1").arg(i->readingToDouble(),0,'f',1);
     reading = i->isMaterialDirect()? reading : reading.append( QString('%'));
 
-    display<<idt.toString(Qt::DefaultLocaleShortDate)<<' '
+    display<<idt.toString(CurrentLocale->dateTimeFormat(QLocale::ShortFormat))<<' '
            <<matstr<<' '
            <<reading<<' '
            <<percent<<endl;
 
     return(displaystring);
+}
+
+QString MainWindow::createHeader()
+{
+    QString r;
+    QTextStream out(&r);
+
+    QDateTime current = QDateTime::currentDateTime();
+
+    out<< "James Instruments Inc." << '\n'
+       << "Aggrameter" << '\n'
+       << "Copyright 2016" << '\n'
+       << tr("Report Created On: ")
+       << CurrentLocale->toString( current, CurrentLocale->dateTimeFormat(QLocale::ShortFormat))//time report created
+       << '\n'
+       <<CurrentLocale->name()<<'\n';
+
+    return r;
 }
 
 /*
@@ -251,33 +269,6 @@ void MainWindow::closeSerialPort()
     ui->statusBar->showMessage(tr("Disconnected"));
 }
 
-/*
- * After all data is uploaded and timer times out
- * this function gets called
- * saves data to temp filed
- * Stops timer (one upload at a time)
- * loads data in InstrumentData vector
- * sets parameters that we NOW HAVE DATA
- */
-
-void MainWindow::endUpload()
-{
-    QString data;
-
-    serialTimeOut->stop();
-    delete serialTimeOut;
-    QMessageBox::information(this, "endUpload", tr("Upload Complete"));
-    data = console->toPlainText();
-    loadData(data);  //loads InstDataVector
-    displayInstData();
-
-    ui->action_Save->setEnabled(true);
-    ui->actionSaveAs->setEnabled(true);
-    ui->action_Open->setEnabled(false);
-    ui->actionMoisture->setEnabled(true);
-    ui->actionPlot->setEnabled(true);
-    ui->actionMoisture->setEnabled(true);
-}
 
 /*
  * outputs InstrumentData vector to console in localized form
@@ -289,12 +280,9 @@ void MainWindow::displayInstData()
 
     for( QVector<InstrumentData>::Iterator i = InstDataVector.begin();
         i != InstDataVector.end(); ++i){
-
         displaystring += createDataLine(i);
-
     }
-    console->setPlainText(""); //erase uploaded data
-    console->setPlainText(displaystring); //replace with formatted data
+    console->appendPlainText(displaystring); //replace with formatted data
 }
 
 /*
@@ -405,6 +393,36 @@ void MainWindow::dlgUpdate()
 
     moistureData->changedata(testdatetime, testpercent);
     moistureData->display();
+}
+
+/*
+ * After all data is uploaded and timer times out
+ * this function gets called
+ * saves data to temp filed
+ * Stops timer (one upload at a time)
+ * loads data in InstrumentData vector
+ * sets parameters that we NOW HAVE DATA
+ */
+
+void MainWindow::endUpload()
+{
+    QString data;
+
+    serialTimeOut->stop();
+    delete serialTimeOut;
+    QMessageBox::information(this, "endUpload", tr("Upload Complete"));
+    data = console->toPlainText();
+    loadData(data);  //loads InstDataVector
+    console->setPlainText(""); //erase uploaded data
+    console->setPlainText(createHeader());
+    displayInstData();
+
+    ui->action_Save->setEnabled(true);
+    ui->actionSaveAs->setEnabled(true);
+    ui->action_Open->setEnabled(false);
+    ui->actionMoisture->setEnabled(true);
+    ui->actionPlot->setEnabled(true);
+    ui->actionMoisture->setEnabled(true);
 }
 
 /*
@@ -522,8 +540,21 @@ void MainWindow::loadData(QString Data)
     serial->close();
 
     QStringList datalines = Data.split( "\n", QString::SkipEmptyParts );
+
+    if(datalines.at(0) == "James Instruments Inc."){ // check if saved file?
+        QLocale templocale( datalines.at(4));
+        if(*CurrentLocale == templocale){
+            *CurrentLocale = templocale;
+            LNGLoadTranslator();
+        }
+        for(qint8 i = 0; i < 5; ++i){
+            qDebug()<<datalines.at(0);
+            datalines.removeFirst();
+        }
+    }
     foreach( QString line, datalines ) {
-        InstrumentData newinstdata(line);
+        InstrumentData newinstdata(line, *CurrentLocale);
+        qDebug()<<line;
         InstDataVector.append(newinstdata);
     }
 }

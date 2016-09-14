@@ -134,11 +134,11 @@ private slots:
     bool saveAs();
     void showSplash();
 
-
 private:
 
     bool checkSerialPort();
     QString createDataLine(QVector<InstrumentData>::Iterator i); //reads data form InstDataVector and returns local string
+    QString createHeader();
     void displayInstData(); //display text from InstDataVector
     void dlgUpdate();
     bool foundSerialPort;
