@@ -166,7 +166,7 @@ QString InstrumentData::rawPercentage()
 {
     bool ok = false;
     bool second = false;
-    QString r = QString(QObject::tr("no percentage"));
+    QString r = QString("no percentage");  //untranslated flag
 
     foreach(QString v, Words){
         v.toDouble( &ok );

@@ -233,8 +233,7 @@ oder serielle Schnittstelle ordnungsgemäß installiert
     <message>
         <location filename="mainwindow.cpp" line="180"/>
         <source>Sand</source>
-        <translation>
-Sand</translation>
+        <translation>Sand</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="183"/>
@@ -418,7 +417,7 @@ Sand</translation>
     <message>
         <location filename="instrumentdata.cpp" line="140"/>
         <source>no percentage</source>
-        <translation type="unfinished"></translation>
+        <translation>kein Prozent</translation>
     </message>
     <message>
         <source>error</source>
@@ -430,22 +429,22 @@ Sand</translation>
     <message>
         <location filename="splash.ui" line="40"/>
         <source>James Instruments Inc.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="splash.ui" line="54"/>
         <source>Aggralinx</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="splash.ui" line="61"/>
         <source>Copyright James Instruments Inc. 2016</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="splash.ui" line="68"/>
         <source>Version 3.1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 </TS>

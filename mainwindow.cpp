@@ -1,3 +1,4 @@
+
 /****************************************************************************
 **
 ** Copyright (C) 2012 Denis Shienkov <denis.shienkov@gmail.com>
@@ -251,7 +252,6 @@ void MainWindow::changeEvent(QEvent *e)
 {
     if(e->type() == QEvent::LanguageChange){
         ui->retranslateUi(this);
-        qDebug()<<"Language Change";
     }else{
         QMainWindow::changeEvent(e);
     }
@@ -493,6 +493,7 @@ void MainWindow::LNGDeutsche()
 {
     delete CurrentLocale;
     CurrentLocale = new QLocale(QLocale::German);
+    QLocale::setDefault(*CurrentLocale);
     LNGLoadTranslator();
 }
 
@@ -513,6 +514,7 @@ void MainWindow::LNGEspanol()
 {
     delete CurrentLocale;
     CurrentLocale = new QLocale(QLocale::Spanish);
+    QLocale::setDefault(*CurrentLocale);
     LNGLoadTranslator();
 }
 
@@ -548,13 +550,11 @@ void MainWindow::loadData(QString Data)
             LNGLoadTranslator();
         }
         for(qint8 i = 0; i < 5; ++i){
-            qDebug()<<datalines.at(0);
             datalines.removeFirst();
         }
     }
     foreach( QString line, datalines ) {
         InstrumentData newinstdata(line, *CurrentLocale);
-        qDebug()<<line;
         InstDataVector.append(newinstdata);
     }
 }

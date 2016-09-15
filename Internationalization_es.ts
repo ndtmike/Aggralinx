@@ -416,7 +416,7 @@ Comprobar instrumento está enchufado
     <message>
         <location filename="instrumentdata.cpp" line="140"/>
         <source>no percentage</source>
-        <translation type="unfinished">no percentage</translation>
+        <translation>no porcentaje</translation>
     </message>
 </context>
 <context>
@@ -424,22 +424,22 @@ Comprobar instrumento está enchufado
     <message>
         <location filename="splash.ui" line="40"/>
         <source>James Instruments Inc.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="splash.ui" line="54"/>
         <source>Aggralinx</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="splash.ui" line="61"/>
         <source>Copyright James Instruments Inc. 2016</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="splash.ui" line="68"/>
         <source>Version 3.1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 </TS>
