@@ -54,7 +54,7 @@ InstrumentData::InstrumentData(const QString& dataIn)
  * Added QLocale to constructor
  */
 
-InstrumentData::InstrumentData(const QString& dataIn, QLocale locale)
+InstrumentData::InstrumentData(const QString& dataIn, QLocale locale, QString dateformat, QString timeformat)
 {
 
     rawInput = dataIn;
@@ -67,14 +67,16 @@ InstrumentData::InstrumentData(const QString& dataIn, QLocale locale)
             if(word != "" && word != "Stone") Words.push_back(word); //special case stuff
     }
 
+    CurrentLocale = locale;
+    DateFormat = dateformat;
+    TimeFormat = timeformat;
+
     TestDate = toQDate();
     TestTime = toQTime();
     TestDateTime = toQDateTime();
     TestMaterial = toMaterial();
     TestReading = readingToDouble();
     TestPercentage = percentageToDouble();
-
-    CurrentLocale = locale;
 }
 
 /*
@@ -241,13 +243,11 @@ double InstrumentData::percentageToDouble()
 double InstrumentData::readingToDouble()
 {
     double r;
-    QString s = rawReading();
-    QTextStream ss(&s);
+    bool found = false;
 
-    ss>>r;
-    if( ss.status() != QTextStream::Ok){
-        r=0.0;
-        QMessageBox::information(NULL,"Reading","Bad Reading Data");
+    for(auto i = Words.begin();i != Words.end(); ++i ){
+        r = i->toDouble(&found);
+        if(found == true)break;
     }
 
     return r;
@@ -289,17 +289,21 @@ QDate InstrumentData::toQDate()
     QDate output, bad;
 
     bad = QDate::fromString("01/01/0001","MM'/'dd'/'yyyy");
-
     QString buffer = rawDate();
 
     output = QDate::fromString( buffer,"MM'/'dd'/'yy");
     output = output.year() < 2016 ? output.addYears(100):output; //stops date being 1900's
 
     if(output.isValid() == false){//not from an upload
-        output = QDate::fromString( buffer, CurrentLocale.dateFormat( QLocale::ShortFormat));
-        output = (output.isValid() == true)? output : bad; //returns all 1's if bad data in final check
+        for(auto i = Words.begin(); i != Words.end();++i){
+            output = QDate::fromString( *i, DateFormat);
+            if(output.isValid() == true){
+                break;
+            }else{
+                output = bad;
+            }
+        }
     }
-
     return(output);
 }
 
@@ -328,9 +332,34 @@ QTime InstrumentData::toQTime()
     output = QTime::fromString(buffer, "hh':'mm");
 
     if(output.isValid() == false){//not from an upload
-        output = QTime::fromString( buffer, CurrentLocale.timeFormat(QLocale::ShortFormat));
-        output = (output.isValid() == true)? output : bad; //returns all 1's if bad data in final check
+        if(TimeFormat.contains("AP")){
+            for(auto i = Words.begin(), j = Words.begin(); i != Words.end();++i){
+                if(*i == "AM"||*i == "PM"){
+                    j = i;
+                    --j;
+                    QString temptime = *j;
+                    temptime.append(' ');
+                    temptime.append( *i );
+                    qDebug()<<temptime;
+                    output = QTime::fromString( temptime, TimeFormat);
+                    output = output.isValid() == true? output : bad;
+                    break;
+                }else{
+                    output = bad;
+                }
+            }
+        }else{
+            for(auto i = Words.begin(); i != Words.end();++i){
+                output = QTime::fromString( *i, TimeFormat);
+                if(output.isValid() == true){
+                    break;
+                }else{
+                    output = bad;
+                }
+            }
+        }
     }
+    qDebug() << output;
     return(output);
 }
 

@@ -71,7 +71,11 @@ MainWindow::MainWindow(QWidget *parent) :
     serial = new QSerialPort(this);
     moistureData = new MoistureDialog(this);
     serialTimeOut = new QTimer(this);
-    CurrentLocale = new QLocale(QLocale::system());
+
+    CurrentLocale = QLocale::system(); //standardized number strings
+    QString systemlocale = CurrentLocale.name();
+    CurrentLocale = QLocale(systemlocale);
+    QLocale::setDefault(CurrentLocale);
     Translator = new QTranslator(this);
 
     saveFileName = "";
@@ -171,7 +175,9 @@ QString MainWindow::createDataLine(QVector<InstrumentData>::Iterator i){
     QTextStream display(&displaystring);
     QString percent;
 
-    QDateTime idt = i->toQDateTime();
+//    QDateTime idt = i->toQDateTime();
+    QTime it = i->toQTime(); //issues with order of QDate time and number format
+    QDate id = i->toQDate();
 
     QString matstr;
     InstrumentData::Material mat = i->toMaterial();
@@ -199,7 +205,9 @@ QString MainWindow::createDataLine(QVector<InstrumentData>::Iterator i){
     reading = QString("%L1").arg(i->readingToDouble(),0,'f',1);
     reading = i->isMaterialDirect()? reading : reading.append( QString('%'));
 
-    display<<idt.toString(CurrentLocale->dateTimeFormat(QLocale::ShortFormat))<<' '
+    display<<it.toString(CurrentLocale.timeFormat(QLocale::ShortFormat))<<' '
+           <<id.toString(CurrentLocale.dateFormat(QLocale::ShortFormat))<<' '
+ //           <<CurrentLocale.name()<<' '
            <<matstr<<' '
            <<reading<<' '
            <<percent<<endl;
@@ -218,9 +226,9 @@ QString MainWindow::createHeader()
        << "Aggrameter" << '\n'
        << "Copyright 2016" << '\n'
        << tr("Report Created On: ")
-       << CurrentLocale->toString( current, CurrentLocale->dateTimeFormat(QLocale::ShortFormat))//time report created
+       << CurrentLocale.toString( current, CurrentLocale.dateTimeFormat(QLocale::ShortFormat))//time report created
        << '\n'
-       <<CurrentLocale->name()<<'\n';
+       <<CurrentLocale.name()<<'\n';
 
     return r;
 }
@@ -283,6 +291,27 @@ void MainWindow::displayInstData()
         displaystring += createDataLine(i);
     }
     console->appendPlainText(displaystring); //replace with formatted data
+}
+
+QString MainWindow::displayHeader(QString d)
+{
+    QString r;
+    QStringList h;
+
+    h = d.split('\n', QString::SkipEmptyParts);
+    for(quint8 i = 0; i<5; ++i ){
+        console->appendPlainText(h.at(0));
+        if( i == 4){
+            CurrentLocale = QLocale(h.at(0));
+            QLocale::setDefault(CurrentLocale);
+            LNGLoadTranslator();
+        }
+
+        h.removeFirst();
+    }
+    r = h.join('\n');
+
+    return(r);
 }
 
 /*
@@ -412,9 +441,9 @@ void MainWindow::endUpload()
     delete serialTimeOut;
     QMessageBox::information(this, "endUpload", tr("Upload Complete"));
     data = console->toPlainText();
-    loadData(data);  //loads InstDataVector
     console->setPlainText(""); //erase uploaded data
     console->setPlainText(createHeader());
+    loadData(data);  //loads InstDataVector
     displayInstData();
 
     ui->action_Save->setEnabled(true);
@@ -491,9 +520,9 @@ void MainWindow::initActionsConnections()
  */
 void MainWindow::LNGDeutsche()
 {
-    delete CurrentLocale;
-    CurrentLocale = new QLocale(QLocale::German);
-    QLocale::setDefault(*CurrentLocale);
+
+    CurrentLocale = QLocale(QLocale::German);
+    QLocale::setDefault(CurrentLocale);
     LNGLoadTranslator();
 }
 
@@ -502,8 +531,8 @@ void MainWindow::LNGDeutsche()
  */
 void MainWindow::LNGEnglish()
 {
-    delete CurrentLocale;
-    CurrentLocale = new QLocale(QLocale::English);
+    CurrentLocale =QLocale(QLocale::English);
+    QLocale::setDefault(CurrentLocale);
     LNGLoadTranslator();
 }
 
@@ -512,9 +541,8 @@ void MainWindow::LNGEnglish()
  */
 void MainWindow::LNGEspanol()
 {
-    delete CurrentLocale;
-    CurrentLocale = new QLocale(QLocale::Spanish);
-    QLocale::setDefault(*CurrentLocale);
+    CurrentLocale = QLocale(QLocale::Spanish);
+    QLocale::setDefault(CurrentLocale);
     LNGLoadTranslator();
 }
 
@@ -524,11 +552,11 @@ void MainWindow::LNGEspanol()
 void MainWindow::LNGLoadTranslator()
 {
     if(Translator->isEmpty()){
-            Translator->load(CurrentLocale->language(), "Internationalization","_");
+            Translator->load(CurrentLocale.language(), "Internationalization","_");
             qApp->installTranslator(Translator);
     }else{
         qApp->removeTranslator(Translator);
-        Translator->load(CurrentLocale->language(), "Internationalization","_");
+        Translator->load(CurrentLocale.language(), "Internationalization","_");
         qApp->installTranslator(Translator);
     }
 }
@@ -543,18 +571,27 @@ void MainWindow::loadData(QString Data)
 
     QStringList datalines = Data.split( "\n", QString::SkipEmptyParts );
 
-    if(datalines.at(0) == "James Instruments Inc."){ // check if saved file?
-        QLocale templocale( datalines.at(4));
-        if(*CurrentLocale == templocale){
-            *CurrentLocale = templocale;
-            LNGLoadTranslator();
-        }
-        for(qint8 i = 0; i < 5; ++i){
-            datalines.removeFirst();
-        }
-    }
     foreach( QString line, datalines ) {
-        InstrumentData newinstdata(line, *CurrentLocale);
+        InstrumentData newinstdata(line, CurrentLocale,
+            CurrentLocale.dateFormat(QLocale::ShortFormat),
+            CurrentLocale.timeFormat(QLocale::ShortFormat));
+        InstDataVector.append(newinstdata);
+    }
+}
+
+/*
+ * loads data from a file
+ */
+
+void MainWindow::loadDataFile(QString Data)
+{
+    serial->close();
+    QStringList datalines = Data.split( "\n", QString::SkipEmptyParts );
+
+    foreach( QString line, datalines ) {
+        InstrumentData newinstdata(line, CurrentLocale,
+            CurrentLocale.dateFormat(QLocale::ShortFormat),
+            CurrentLocale.timeFormat(QLocale::ShortFormat));
         InstDataVector.append(newinstdata);
     }
 }
@@ -582,7 +619,9 @@ void MainWindow::openFile()
     QApplication::restoreOverrideCursor();
 #endif
     file.close();
-    loadData(data);  //loads InstDataVector
+    console->setPlainText("");
+    data = displayHeader(data);
+    loadDataFile(data);  //loads InstDataVector
     displayInstData();
 
     ui->actionMoisture->setEnabled(true);

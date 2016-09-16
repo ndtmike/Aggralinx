@@ -99,7 +99,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    QLocale* CurrentLocale;
+    QLocale CurrentLocale;
     QString saveFileName;
 
 protected:
@@ -138,15 +138,17 @@ private:
 
     bool checkSerialPort();
     QString createDataLine(QVector<InstrumentData>::Iterator i); //reads data form InstDataVector and returns local string
-    QString createHeader();
+    QString createHeader(); //create header from upload
     void displayInstData(); //display text from InstDataVector
+    QString displayHeader(QString d); //display header from file
     void dlgUpdate();
     bool foundSerialPort;
     void initActionsConnections();
     QVector <InstrumentData> InstDataVector; //loaded with each line uploaded for localization purposes
     QVector <InstrumentData> ::iterator dlgInstDataVectorIterator;
     void LNGLoadTranslator();  //after QLocale is chnaged string need to be loaded
-    void loadData(QString Data);
+    void loadData(QString Data); //loads data in InstDataVector from upload
+    void loadDataFile(QString Data); //loads data in InstDataVector from File
     int posGetPos(QString& data, int line_number, bool begin);
     bool saveFile(const QString &fileName);
     QTranslator* Translator;

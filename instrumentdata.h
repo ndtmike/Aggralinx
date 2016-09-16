@@ -36,7 +36,7 @@ public:
 
     InstrumentData();
     InstrumentData(const QString& dataIn);
-    InstrumentData(const QString& dataIn, QLocale locale);
+    InstrumentData(const QString& dataIn, QLocale locale, QString dateformat, QString timeformat);
     ~InstrumentData();
 //These need to be rethought but for now ok
     bool isMaterialDirect();
@@ -51,18 +51,19 @@ public:
 private:
 
     QLocale CurrentLocale;
+    QString DateFormat;
+    QString rawInput;
     QDate TestDate;
     QDateTime TestDateTime;
     Material TestMaterial;
     double TestPercentage;
     double TestReading;
     QTime TestTime;
-
+    QString TimeFormat;
 
     QString cleanWord(QString data);
     double percentageToDouble(); //calculated percentage always get percent sign from initstring
     QString rawDate();
-    QString rawInput;
     QString rawMaterial();
     QString rawPercentage();
     QString rawReading();
