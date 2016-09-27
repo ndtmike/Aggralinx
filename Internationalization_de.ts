@@ -158,63 +158,63 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="105"/>
+        <location filename="mainwindow.cpp" line="110"/>
         <source>The &lt;b&gt;Aggralinx Software&lt;/b&gt; Version 3.1 is used with the &lt;br&gt;</source>
         <translation>Das &lt;b&gt;Aggralinx Software&lt;/b&gt; Version 3.2 ist mit der verwendeten &lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="106"/>
+        <location filename="mainwindow.cpp" line="111"/>
         <source>&lt;b&gt;&lt;i&gt;James Instruments Inc.&lt;/i&gt;&lt;/b&gt; Aggrameter T-T-100.&lt;br&gt;&lt;br&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="107"/>
+        <location filename="mainwindow.cpp" line="112"/>
         <source>USA: +1773.4636565&lt;br&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="108"/>
+        <location filename="mainwindow.cpp" line="113"/>
         <source>Europe: +31.548.659032&lt;br&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="109"/>
+        <location filename="mainwindow.cpp" line="114"/>
         <source>Email: &lt;a href=&quot;mailto:info@ndtjames.com?Subject=Aggrameter&quot; target=&quot;_top&quot;&gt;info@ndtjames.com&lt;/a&gt;&lt;br&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="110"/>
+        <location filename="mainwindow.cpp" line="115"/>
         <source>Web: &lt;a href=&quot;http://www.ndtjames.com&quot;&gt;http://www.ndtjames.com&lt;/a&gt;&lt;br&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="111"/>
+        <location filename="mainwindow.cpp" line="116"/>
         <source>&lt;br&gt;Copyright 2016&lt;br&gt;&lt;br&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="112"/>
+        <location filename="mainwindow.cpp" line="117"/>
         <source>Aggralinx is based in part on the work of&lt;br&gt; the &lt;a href=&quot;http://qwt.sf.net&quot;&gt; Qwt project (http://qwt.sf.net)&lt;/a&gt;,&lt;br&gt;</source>
         <translation>
 ist teilweise auf der Arbeit der Basis</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="113"/>
+        <location filename="mainwindow.cpp" line="118"/>
         <source>the &lt;a href=&quot;http://www.qt.io&quot;&gt;QT project (http://www.qt.io) &lt;/a&gt;,&lt;br&gt;</source>
         <translation>das &lt;a href=&quot;http://www.qt.io&quot;&gt;QT project (http://www.qt.io) &lt;/a&gt;,&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="114"/>
+        <location filename="mainwindow.cpp" line="119"/>
         <source>and the &lt;a href=&quot;http://www.mingw.org/&quot;&gt;MinGW Project (http://www.mingw.org)&lt;/a&gt;</source>
         <translation>und das&lt;a href=&quot;http://www.mingw.org/&quot;&gt;MinGW Project (http://www.mingw.org)&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="116"/>
+        <location filename="mainwindow.cpp" line="121"/>
         <source>About Aggrameter</source>
         <translation>Etwas Aggrameter</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="129"/>
+        <location filename="mainwindow.cpp" line="134"/>
         <source>No Available Ports
 Check instrument is plugged in
 or serial port installed properly
@@ -226,118 +226,123 @@ oder serielle Schnittstelle ordnungsgemäß installiert
  starten Aggralinx</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="134"/>
+        <location filename="mainwindow.cpp" line="139"/>
         <source>Connected to </source>
         <translation>Angeschlossen</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="180"/>
+        <location filename="mainwindow.cpp" line="187"/>
         <source>Sand</source>
         <translation>Sand</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="183"/>
+        <location filename="mainwindow.cpp" line="190"/>
         <source>Gravel</source>
         <translation>Schotter</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="186"/>
+        <location filename="mainwindow.cpp" line="193"/>
         <source>Crushed Stone</source>
         <translation>Geröll</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="189"/>
+        <location filename="mainwindow.cpp" line="196"/>
         <source>Direct</source>
         <translation>Direkt</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="193"/>
+        <location filename="mainwindow.cpp" line="200"/>
         <source>Bad Data</source>
         <translation>Bad Daten</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="251"/>
+        <location filename="mainwindow.cpp" line="228"/>
+        <source>Report Created On: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="277"/>
         <source>Disconnected</source>
         <translation>getrennt</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="334"/>
-        <location filename="mainwindow.cpp" line="339"/>
+        <location filename="mainwindow.cpp" line="351"/>
+        <location filename="mainwindow.cpp" line="356"/>
         <source>Enter</source>
         <translation>Eingeben</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="334"/>
+        <location filename="mainwindow.cpp" line="351"/>
         <source>Bad Percent Data</source>
         <translation>Bad Prozent Daten</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="339"/>
+        <location filename="mainwindow.cpp" line="356"/>
         <source>Percent Data Out of Range</source>
         <translation>Prozent Daten Aus des Range</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="398"/>
+        <location filename="mainwindow.cpp" line="415"/>
         <source>Test Date and Time</source>
         <translation>Test-Datum und Uhrzeit</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="400"/>
+        <location filename="mainwindow.cpp" line="417"/>
         <source>Reading:</source>
         <translation>Instrument Lesung:</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="417"/>
+        <location filename="mainwindow.cpp" line="464"/>
         <source>Critical Error</source>
         <translation>Kritischer Fehler</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="269"/>
+        <location filename="mainwindow.cpp" line="442"/>
         <source>Upload Complete</source>
         <translation>Hochladen abgeschlossen</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="540"/>
+        <location filename="mainwindow.cpp" line="608"/>
         <source>Open Text File</source>
         <translation>Textdatei öffnen</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="540"/>
+        <location filename="mainwindow.cpp" line="608"/>
         <source>Text FIles (*.txt)</source>
         <translation>Textdateien (*.txt)</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="579"/>
+        <location filename="mainwindow.cpp" line="649"/>
         <source>Connected</source>
         <translation>Verbindung</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="581"/>
+        <location filename="mainwindow.cpp" line="651"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="583"/>
+        <location filename="mainwindow.cpp" line="653"/>
         <source>Open error</source>
         <translation>Öffnen Sie Fehler</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="626"/>
+        <location filename="mainwindow.cpp" line="696"/>
         <source>File: </source>
         <translation>Datei:</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="628"/>
+        <location filename="mainwindow.cpp" line="698"/>
         <source>Saved Successfully</source>
         <translation>Erfolgreich gespeichert</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="643"/>
+        <location filename="mainwindow.cpp" line="713"/>
         <source>Text (*.txt)</source>
         <translation>Textdateien (*.txt)</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="662"/>
+        <location filename="mainwindow.cpp" line="732"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Die Datei kann nicht% 1 schreiben:
@@ -391,33 +396,32 @@ oder serielle Schnittstelle ordnungsgemäß installiert
 <context>
     <name>QObject</name>
     <message>
-        <location filename="instrumentdata.cpp" line="119"/>
-        <location filename="instrumentdata.cpp" line="247"/>
+        <location filename="instrumentdata.cpp" line="150"/>
+        <location filename="instrumentdata.cpp" line="276"/>
         <source>Direct</source>
         <translation>Direkt</translation>
     </message>
     <message>
-        <location filename="instrumentdata.cpp" line="120"/>
-        <location filename="instrumentdata.cpp" line="241"/>
+        <location filename="instrumentdata.cpp" line="151"/>
+        <location filename="instrumentdata.cpp" line="270"/>
         <source>Sand</source>
         <translation>Sand</translation>
     </message>
     <message>
-        <location filename="instrumentdata.cpp" line="121"/>
-        <location filename="instrumentdata.cpp" line="243"/>
+        <location filename="instrumentdata.cpp" line="152"/>
+        <location filename="instrumentdata.cpp" line="272"/>
         <source>Gravel</source>
         <translation>Schotter</translation>
     </message>
     <message>
-        <location filename="instrumentdata.cpp" line="122"/>
-        <location filename="instrumentdata.cpp" line="245"/>
+        <location filename="instrumentdata.cpp" line="153"/>
+        <location filename="instrumentdata.cpp" line="274"/>
         <source>Cr.</source>
         <translation>Geröll</translation>
     </message>
     <message>
-        <location filename="instrumentdata.cpp" line="140"/>
         <source>no percentage</source>
-        <translation>kein Prozent</translation>
+        <translation type="vanished">kein Prozent</translation>
     </message>
     <message>
         <source>error</source>

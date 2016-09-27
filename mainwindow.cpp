@@ -606,30 +606,32 @@ void MainWindow::openFile()
     QString data;
     fileName = QFileDialog::getOpenFileName(this,
         tr("Open Text File"), "", tr("Text FIles (*.txt)"));
-    saveFileName = fileName;
+    if( fileName != ""){ // test to make sure user didn't cancel
+        saveFileName = fileName;
 
-    QFile file(saveFileName);
-    file.open(QFile::ReadOnly | QFile::Text);
-    QTextStream load(&file);
+        QFile file(saveFileName);
+        file.open(QFile::ReadOnly | QFile::Text);
+        QTextStream load(&file);
 #ifndef QT_NO_CURSOR
-    QApplication::setOverrideCursor(Qt::WaitCursor);
+        QApplication::setOverrideCursor(Qt::WaitCursor);
 #endif
-    data = load.readAll();
+        data = load.readAll();
 #ifndef QT_NO_CURSOR
-    QApplication::restoreOverrideCursor();
+        QApplication::restoreOverrideCursor();
 #endif
-    file.close();
-    console->setPlainText("");
-    data = displayHeader(data);
-    loadDataFile(data);  //loads InstDataVector
-    displayInstData();
+        file.close();
+        console->setPlainText("");
+        data = displayHeader(data);
+        loadDataFile(data);  //loads InstDataVector
+        displayInstData();
 
-    ui->actionMoisture->setEnabled(true);
-    ui->action_Save->setEnabled(true);
-    ui->actionSaveAs->setEnabled(true);
-    ui->action_Open->setEnabled(false);
-    ui->actionPlot->setEnabled(true);
-    ui->actionMoisture->setEnabled(true);
+        ui->actionMoisture->setEnabled(true);
+        ui->action_Save->setEnabled(true);
+        ui->actionSaveAs->setEnabled(true);
+        ui->action_Open->setEnabled(false);
+        ui->actionPlot->setEnabled(true);
+        ui->actionMoisture->setEnabled(true);
+    }
 }
 
 /*

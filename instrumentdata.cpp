@@ -242,7 +242,7 @@ double InstrumentData::percentageToDouble()
 
 double InstrumentData::readingToDouble()
 {
-    double r;
+    double r = 0.0;
     bool found = false;
 
     for(auto i = Words.begin();i != Words.end(); ++i ){

@@ -36,7 +36,8 @@ RESOURCES += \
 DISTFILES +=
 
 TRANSLATIONS += Internationalization_de.ts \
-               Internationalization_es.ts
+               Internationalization_es.ts \
+                Internationalization_nl.ts
 
 win32{
 RC_ICONS += ../icon/NDT_agg1.ico
