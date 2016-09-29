@@ -72,9 +72,11 @@ void DataPlot::createPoints(const QString& rawdata)
 {
     QString line = "";
     QStringList datalines = rawdata.split("\n", QString::SkipEmptyParts);
+    QStringList noheader = datalines.filter(tr("Direct"));
+
 
     plotDataPoints.clear();
-    foreach (line, datalines) {
+    foreach (line, noheader) {
         if(!loadPlotDataPoints(line)) return;
     }
     displayGraph(plotDataPoints);
@@ -150,6 +152,7 @@ void DataPlot::displayRegParameters(const QString &in){
     text_label->attach( this );
     text_label->show();
 }
+
 /*
  * loads datapoints from string
 */
@@ -188,6 +191,7 @@ bool DataPlot::loadPlotDataPoints(const QString& line)
     plotDataPoints << QPointF(dr,dm);
     return(success);
 }
+
 /*
  * a constructor function to set general chart parameters
  * */

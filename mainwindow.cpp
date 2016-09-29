@@ -107,7 +107,7 @@ void MainWindow::about()
     QString s;
     QTextStream toabout(&s);
 
-    toabout << tr("The <b>Aggralinx Software</b> Version 3.1 is used with the <br>") <<
+    toabout << tr("The <b>Aggralinx Software</b> Version 3.2 is used with the <br>") <<
                tr("<b><i>James Instruments Inc.</i></b> Aggrameter T-T-100.<br><br>")<<
                tr("USA: +1773.4636565<br>")<<
                tr("Europe: +31.548.659032<br>")<<
@@ -175,7 +175,6 @@ QString MainWindow::createDataLine(QVector<InstrumentData>::Iterator i){
     QTextStream display(&displaystring);
     QString percent;
 
-//    QDateTime idt = i->toQDateTime();
     QTime it = i->toQTime(); //issues with order of QDate time and number format
     QDate id = i->toQDate();
 
@@ -207,7 +206,6 @@ QString MainWindow::createDataLine(QVector<InstrumentData>::Iterator i){
 
     display<<it.toString(CurrentLocale.timeFormat(QLocale::ShortFormat))<<' '
            <<id.toString(CurrentLocale.dateFormat(QLocale::ShortFormat))<<' '
- //           <<CurrentLocale.name()<<' '
            <<matstr<<' '
            <<reading<<' '
            <<percent<<endl;
@@ -345,7 +343,7 @@ void MainWindow::dlgEnter()
     QTextStream percentstream(&percentstring);
 
     percentstring = moistureData->getPercent();
-    percentstream >>percentdouble;
+    percentstream >> percentdouble;
 
     if(percentstream.status() != QTextStream::Ok){
         QMessageBox::information(this, tr("Enter"), tr("Bad Percent Data"));
@@ -358,6 +356,7 @@ void MainWindow::dlgEnter()
     }
     if(ok == true){//everything good update console
         console->setPlainText("");
+        console->setPlainText(createHeader());
         displayInstData();
         dlgForward();
     }

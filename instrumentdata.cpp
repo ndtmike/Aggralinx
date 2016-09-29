@@ -340,7 +340,6 @@ QTime InstrumentData::toQTime()
                     QString temptime = *j;
                     temptime.append(' ');
                     temptime.append( *i );
-                    qDebug()<<temptime;
                     output = QTime::fromString( temptime, TimeFormat);
                     output = output.isValid() == true? output : bad;
                     break;
@@ -359,7 +358,6 @@ QTime InstrumentData::toQTime()
             }
         }
     }
-    qDebug() << output;
     return(output);
 }
 
@@ -371,7 +369,7 @@ bool InstrumentData::updateTestPercent(const double &value)
 
     bool result;
 
-    if(value > 0.0 && value < 100.0){
+    if(value >= 0.0 && value <= 100.0){
         TestPercentage = value;
         result = true;
     }else{

@@ -41,7 +41,7 @@ TRANSLATIONS += Internationalization_de.ts \
 
 win32{
 RC_ICONS += ../icon/NDT_agg1.ico
-VERSION = 1.0.0.0
+VERSION = 3.2.0.0
 QMAKE_TARGET_COMPANY = James Instruments Inc.
 QMAKE_TARGET_PRODUCT = Aggralinx
 QMAKE_TARGET_DESCRIPTION = Upload Software for James Instruments Aggrameter
